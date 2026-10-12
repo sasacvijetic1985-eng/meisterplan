@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f4e9c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Meisterplan">
+<title>Meisterplan · Cvijetić</title>
+<style>
+:root{--blue:#1f4e9c;--blue2:#163a76;--green:#3a9d3a;--green2:#2e7d2e;--bg:#f3f5f9;--card:#fff;--ink:#1b2333;--muted:#667085;--line:#e3e7ee;--red:#c62828;--ice:#e7f1ff;--iceb:#7fb0f0;--amber:#b26a00}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:20;background:var(--blue);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top))}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.logo{width:34px;height:34px;border-radius:9px;background:#fff;color:var(--blue);display:grid;place-items:center;font-weight:800;font-size:17px;flex:none}
+.logo b{color:var(--green)}
+.bt{font-weight:700;font-size:16px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bs{font-size:11.5px;opacity:.8}
+.hbtn{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:20px;padding:7px 12px;cursor:pointer;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+main{max-width:860px;margin:0 auto;padding:16px 16px 110px}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav.bottom .in{display:flex;max-width:860px;width:100%}
+.nb{flex:1;background:none;border:0;padding:8px 2px 9px;font-size:11px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.nb span{font-size:20px;line-height:1.1}
+.nb.on{color:var(--blue);font-weight:700}
+.tbar{position:sticky;top:56px;z-index:15;background:var(--green);color:#fff;display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer}
+.tbar .tn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbar b{font-variant-numeric:tabular-nums;font-size:17px}
+.tbar button{background:#fff;color:var(--red);border:0;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer}
+h1{font-size:21px;margin:4px 0 12px}
+h2{font-size:17px;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+h2 .sp{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.click{cursor:pointer}
+.click:active{transform:scale(.995)}
+.obj.wd{border-left:5px solid var(--iceb);background:linear-gradient(90deg,var(--ice),#fff 55%)}
+.ot{font-weight:700;font-size:15.5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--muted);font-size:13.5px}
+.small{font-size:12.5px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:#eef2f8;color:var(--blue2);white-space:nowrap}
+.b-wd{background:#d6e8ff;color:#0d47a1}
+.b-open{background:#fff3df;color:var(--amber)}
+.b-in_progress{background:#e3efff;color:var(--blue)}
+.b-done{background:#e2f4e2;color:var(--green2)}
+.b-red{background:#fde7e7;color:var(--red)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff}
+.btn.g{background:var(--green)}
+.btn.r{background:var(--red)}
+.btn.l{background:#eef2f8;color:var(--blue2)}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:8px}
+.btn.big{width:100%;padding:16px;font-size:18px;border-radius:12px}
+.btn:disabled{opacity:.5;cursor:default}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 11px;background:#fff}
+textarea{min-height:80px;resize:vertical}
+input[type=checkbox]{width:auto;transform:scale(1.25);margin-right:8px}
+.chk{display:flex;align-items:center;padding:8px 0;color:var(--ink);font-size:15px;margin:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:6px 12px;cursor:pointer;font-size:13.5px}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#dde3ec;cursor:pointer}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:3px 6px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer}
+.stat .n{font-size:26px;font-weight:800;color:var(--blue)}
+.stat.g .n{color:var(--green)}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line);font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f7f9fc;font-size:12px;color:var(--muted)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom))}
+@media(min-width:640px){.modal-bg{align-items:center}.modal{border-radius:16px}}
+.modal h3{margin:0 0 6px;font-size:18px}
+.mact{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap}
+#toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:#1b2333;color:#fff;padding:10px 16px;border-radius:10px;z-index:60;font-size:14px;max-width:90vw;display:none}
+.auth{max-width:420px;margin:7vh auto 0;padding:0 16px}
+.auth .logo{width:56px;height:56px;font-size:26px;border-radius:14px;margin:0 auto 10px;background:var(--blue);color:#fff}
+.auth .logo b{color:#9be39b}
+.center{text-align:center}
+.link{background:none;border:0;color:var(--blue);cursor:pointer;padding:8px;text-decoration:underline}
+.langs{display:flex;gap:6px;justify-content:center;margin:14px 0}
+.empty{color:var(--muted);text-align:center;padding:22px 0}
+.err{color:var(--red);font-size:13.5px;margin-top:8px}
+.spin{text-align:center;color:var(--muted);padding:40px 0}
+a{color:var(--blue)}
+</style>
+</head>
+<body>
+<div id="app"><div class="spin">…</div></div>
+<div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ================= Konfiguration ================= */
+const SUPABASE_URL = 'https://kzwjweqfnajkyakallza.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_3xRu4DJYndIY5WVUFu4hfQ_I-ZYsBUB';
+
+/* ================= Sprachen ================= */
+const LANGS = ['de','en','sr','tr','hr'];
+const LNAMES = {de:'Deutsch',en:'English',sr:'Srpski',tr:'Türkçe',hr:'Hrvatski'};
+const LOCALES = {de:'de-DE',en:'en-GB',sr:'sr-Latn-RS',tr:'tr-TR',hr:'hr-HR'};
+const L = {
+ login:['Anmelden','Sign in','Prijava','Giriş','Prijava'],
+ register:['Registrieren','Register','Registracija','Kayıt ol','Registracija'],
+ email:['E-Mail','Email','E-mail','E-posta','E-mail'],
+ password:['Passwort','Password','Lozinka','Şifre','Lozinka'],
+ fullName:['Vor- und Nachname','Full name','Ime i prezime','Ad Soyad','Ime i prezime'],
+ company:['Firma (nur für Hausverwaltungen)','Company (property managers only)','Firma (samo za upravnike zgrada)','Firma (sadece yönetim şirketleri)','Tvrtka (samo za upravitelje zgrada)'],
+ noAccount:['Noch kein Konto? Registrieren','No account yet? Register','Nemaš nalog? Registruj se','Hesabın yok mu? Kayıt ol','Nemaš račun? Registriraj se'],
+ haveAccount:['Schon ein Konto? Anmelden','Already have an account? Sign in','Već imaš nalog? Prijavi se','Hesabın var mı? Giriş yap','Već imaš račun? Prijavi se'],
+ checkEmail:['Bitte bestätigen Sie Ihre E-Mail-Adresse über den zugesandten Link und melden Sie sich dann an.','Please confirm your email via the link we sent, then sign in.','Potvrdi e-mail adresu preko poslatog linka, pa se prijavi.','Lütfen gönderilen bağlantıyla e-postanızı onaylayın, sonra giriş yapın.','Potvrdi e-mail adresu putem poslane poveznice, zatim se prijavi.'],
+ pwShort:['Passwort mindestens 6 Zeichen.','Password at least 6 characters.','Lozinka najmanje 6 znakova.','Şifre en az 6 karakter.','Lozinka najmanje 6 znakova.'],
+ logout:['Abmelden','Sign out','Odjava','Çıkış','Odjava'],
+ setupTitle:['Einrichtung','Setup','Podešavanje','Kurulum','Postavljanje'],
+ setupText:['Supabase-Projekt einmalig verbinden.','Connect the Supabase project once.','Jednom poveži Supabase projekat.','Supabase projesini bir kez bağlayın.','Jednom poveži Supabase projekt.'],
+ save:['Speichern','Save','Sačuvaj','Kaydet','Spremi'],
+ cancel:['Abbrechen','Cancel','Otkaži','İptal','Odustani'],
+ close:['Schließen','Close','Zatvori','Kapat','Zatvori'],
+ delete:['Löschen','Delete','Obriši','Sil','Obriši'],
+ edit:['Bearbeiten','Edit','Izmeni','Düzenle','Uredi'],
+ back:['‹ Zurück','‹ Back','‹ Nazad','‹ Geri','‹ Natrag'],
+ confirmDelete:['Wirklich löschen?','Really delete?','Sigurno obrisati?','Gerçekten silinsin mi?','Stvarno obrisati?'],
+ pendingTitle:['Konto wartet auf Freigabe','Account awaiting approval','Nalog čeka odobrenje','Hesap onay bekliyor','Račun čeka odobrenje'],
+ pendingText:['Der Inhaber schaltet Ihr Konto frei. Danach hier auf „Aktualisieren“ tippen.','The owner will approve your account. Then tap “Refresh”.','Vlasnik će odobriti tvoj nalog. Posle toga dodirni „Osveži“.','Hesabınızı işletme sahibi onaylayacak. Sonra “Yenile”ye dokunun.','Vlasnik će odobriti tvoj račun. Nakon toga dodirni „Osvježi“.'],
+ disabledText:['Dieses Konto ist gesperrt.','This account is disabled.','Ovaj nalog je blokiran.','Bu hesap engellendi.','Ovaj račun je blokiran.'],
+ refresh:['Aktualisieren','Refresh','Osveži','Yenile','Osvježi'],
+ nav_dash:['Übersicht','Overview','Pregled','Özet','Pregled'],
+ nav_objects:['Objekte','Properties','Objekti','Binalar','Objekti'],
+ nav_tasks:['Aufgaben','Tasks','Zadaci','Görevler','Zadaci'],
+ nav_hours:['Stunden','Hours','Sati','Saatler','Sati'],
+ nav_mat:['Material','Material','Materijal','Malzeme','Materijal'],
+ nav_team:['Team','Team','Tim','Ekip','Tim'],
+ newObject:['+ Neues Objekt','+ New property','+ Novi objekat','+ Yeni bina','+ Novi objekt'],
+ editObject:['Objekt bearbeiten','Edit property','Izmeni objekat','Binayı düzenle','Uredi objekt'],
+ name:['Bezeichnung','Name','Naziv','Ad','Naziv'],
+ address:['Straße und Hausnummer','Street and number','Ulica i broj','Sokak ve numara','Ulica i broj'],
+ city:['PLZ und Ort','Postcode and city','Poštanski broj i mesto','Posta kodu ve şehir','Poštanski broj i mjesto'],
+ client:['Kunde / Hausverwaltung','Client / property manager','Klijent / upravnik','Müşteri / yönetim','Klijent / upravitelj'],
+ none:['— keiner —','— none —','— nijedan —','— yok —','— nijedan —'],
+ wd:['Winterdienst','Winter service','Zimska služba','Kış hizmeti','Zimska služba'],
+ wdOnly:['❄ Nur Winterdienst','❄ Winter service only','❄ Samo zimska služba','❄ Sadece kış hizmeti','❄ Samo zimska služba'],
+ inactive:['inaktiv','inactive','neaktivan','pasif','neaktivan'],
+ notes:['Hinweise','Notes','Napomene','Notlar','Napomene'],
+ active:['Aktiv','Active','Aktivan','Aktif','Aktivan'],
+ workers:['Zuständige Mitarbeiter','Assigned workers','Zaduženi radnici','Sorumlu çalışanlar','Zaduženi radnici'],
+ worker:['Mitarbeiter','Worker','Radnik','Çalışan','Radnik'],
+ noObjects:['Keine Objekte.','No properties.','Nema objekata.','Bina yok.','Nema objekata.'],
+ noWorkersYet:['Noch keine Mitarbeiter freigeschaltet (Team).','No workers approved yet (Team).','Još nema odobrenih radnika (Tim).','Henüz onaylı çalışan yok (Ekip).','Još nema odobrenih radnika (Tim).'],
+ search:['Suchen…','Search…','Pretraga…','Ara…','Pretraga…'],
+ all:['Alle','All','Svi','Tümü','Svi'],
+ newTask:['+ Neue Aufgabe','+ New task','+ Novi zadatak','+ Yeni görev','+ Novi zadatak'],
+ title:['Was ist zu tun?','What needs doing?','Šta treba uraditi?','Ne yapılacak?','Što treba napraviti?'],
+ description:['Details','Details','Detalji','Ayrıntılar','Detalji'],
+ status:['Status','Status','Status','Durum','Status'],
+ st_open:['Offen','Open','Otvoren','Açık','Otvoren'],
+ st_in_progress:['In Arbeit','In progress','U radu','Devam ediyor','U tijeku'],
+ st_done:['Erledigt','Done','Završen','Tamamlandı','Završen'],
+ assignedTo:['Zuständig','Assigned to','Zadužen','Sorumlu','Zadužen'],
+ due:['Fällig bis','Due','Rok','Son tarih','Rok'],
+ createdBy:['Erstellt von','Created by','Kreirao','Oluşturan','Kreirao'],
+ noTasks:['Keine Aufgaben.','No tasks.','Nema zadataka.','Görev yok.','Nema zadataka.'],
+ object:['Objekt','Property','Objekat','Bina','Objekt'],
+ chooseObject:['— Objekt wählen —','— choose property —','— izaberi objekat —','— bina seçin —','— odaberi objekt —'],
+ startWork:['▶ Arbeit starten','▶ Start work','▶ Počni rad','▶ İşe başla','▶ Počni rad'],
+ stopWork:['■ Arbeit beenden','■ Stop work','■ Završi rad','■ İşi bitir','■ Završi rad'],
+ stop:['Stopp','Stop','Stop','Dur','Stop'],
+ noteOpt:['Was wurde gemacht? (optional)','What was done? (optional)','Šta je urađeno? (opciono)','Ne yapıldı? (isteğe bağlı)','Što je napravljeno? (neobavezno)'],
+ otherRunning:['Es läuft bereits eine Zeiterfassung – bitte zuerst beenden.','A timer is already running – stop it first.','Već teče merenje vremena – prvo ga završi.','Zaten çalışan bir sayaç var – önce bitirin.','Već teče mjerenje vremena – prvo ga završi.'],
+ runningHere:['Läuft hier seit','Running here since','Ovde traje od','Burada başladı:','Ovdje traje od'],
+ total:['Gesamt','Total','Ukupno','Toplam','Ukupno'],
+ start:['Beginn','Start','Početak','Başlangıç','Početak'],
+ end:['Ende','End','Kraj','Bitiş','Kraj'],
+ duration:['Dauer','Duration','Trajanje','Süre','Trajanje'],
+ month:['Monat','Month','Mesec','Ay','Mjesec'],
+ exportCsv:['⬇ CSV','⬇ CSV','⬇ CSV','⬇ CSV','⬇ CSV'],
+ noEntries:['Keine Einträge.','No entries.','Nema unosa.','Kayıt yok.','Nema unosa.'],
+ manualEntry:['+ Zeit nachtragen','+ Add time','+ Dodaj vreme','+ Süre ekle','+ Dodaj vrijeme'],
+ date:['Datum','Date','Datum','Tarih','Datum'],
+ from:['Von','From','Od','Başlangıç','Od'],
+ to:['Bis','To','Do','Bitiş','Do'],
+ note:['Notiz','Note','Napomena','Not','Napomena'],
+ runningNow:['läuft','running','traje','devam ediyor','traje'],
+ endBeforeStart:['Ende muss nach Beginn liegen.','End must be after start.','Kraj mora biti posle početka.','Bitiş başlangıçtan sonra olmalı.','Kraj mora biti nakon početka.'],
+ photos:['Fotos','Photos','Fotografije','Fotoğraflar','Fotografije'],
+ addPhoto:['📷 Foto','📷 Photo','📷 Fotografija','📷 Fotoğraf','📷 Fotografija'],
+ noPhotos:['Noch keine Fotos.','No photos yet.','Još nema fotografija.','Henüz fotoğraf yok.','Još nema fotografija.'],
+ uploading:['Fotos werden hochgeladen…','Uploading photos…','Otpremanje fotografija…','Fotoğraflar yükleniyor…','Učitavanje fotografija…'],
+ uploaded:['Fotos gespeichert','Photos saved','Fotografije sačuvane','Fotoğraflar kaydedildi','Fotografije spremljene'],
+ newRequest:['📦 Material anfordern','📦 Request material','📦 Zatraži materijal','📦 Malzeme iste','📦 Zatraži materijal'],
+ item:['Was wird benötigt?','What is needed?','Šta je potrebno?','Ne gerekiyor?','Što je potrebno?'],
+ qty:['Menge','Quantity','Količina','Miktar','Količina'],
+ mr_open:['Neu','New','Novo','Yeni','Novo'],
+ mr_ordered:['Bestellt','Ordered','Naručeno','Sipariş verildi','Naručeno'],
+ mr_done:['Erledigt','Done','Rešeno','Tamamlandı','Riješeno'],
+ noRequests:['Keine Anfragen.','No requests.','Nema zahteva.','Talep yok.','Nema zahtjeva.'],
+ requestSent:['Anfrage gesendet','Request sent','Zahtev poslat','Talep gönderildi','Zahtjev poslan'],
+ role:['Rolle','Role','Uloga','Rol','Uloga'],
+ r_owner:['Inhaber','Owner','Vlasnik','Sahip','Vlasnik'],
+ r_worker:['Mitarbeiter','Worker','Radnik','Çalışan','Radnik'],
+ r_client:['Kunde','Client','Klijent','Müşteri','Klijent'],
+ r_pending:['Wartet auf Freigabe','Pending','Čeka odobrenje','Onay bekliyor','Čeka odobrenje'],
+ r_disabled:['Gesperrt','Disabled','Blokiran','Engelli','Blokiran'],
+ saved:['Gespeichert ✓','Saved ✓','Sačuvano ✓','Kaydedildi ✓','Spremljeno ✓'],
+ activeNow:['Gerade im Einsatz','Working right now','Trenutno na terenu','Şu an çalışıyor','Trenutno na terenu'],
+ nobody:['Gerade arbeitet niemand.','Nobody is working right now.','Trenutno niko ne radi.','Şu an kimse çalışmıyor.','Trenutno nitko ne radi.'],
+ openTasks:['Offene Aufgaben','Open tasks','Otvoreni zadaci','Açık görevler','Otvoreni zadaci'],
+ openRequests:['Materialanfragen','Material requests','Zahtevi za materijal','Malzeme talepleri','Zahtjevi za materijal'],
+ hoursMonth:['Stunden diesen Monat','Hours this month','Sati ovog meseca','Bu ayki saatler','Sati ovog mjeseca'],
+ pendingUsers:['Neue Konten warten auf Freigabe','New accounts await approval','Novi nalozi čekaju odobrenje','Yeni hesaplar onay bekliyor','Novi računi čekaju odobrenje'],
+ profile:['Profil','Profile','Profil','Profil','Profil'],
+ phone:['Telefon','Phone','Telefon','Telefon','Telefon'],
+ language:['Sprache','Language','Jezik','Dil','Jezik'],
+ route:['📍 Route','📍 Directions','📍 Ruta','📍 Yol tarifi','📍 Ruta'],
+ required:['Bitte Pflichtfelder ausfüllen.','Please fill in required fields.','Popuni obavezna polja.','Lütfen zorunlu alanları doldurun.','Ispuni obavezna polja.'],
+ inviteText:['So kommen Mitarbeiter und Kunden in die App: Link schicken → sie registrieren sich → Sie geben hier die Rolle frei.','How workers and clients join: send the link → they register → you approve their role here.','Kako radnici i klijenti ulaze u aplikaciju: pošalji link → oni se registruju → ti ovde odobriš ulogu.','Çalışanlar ve müşteriler nasıl katılır: bağlantıyı gönderin → kayıt olurlar → burada rolü onaylarsınız.','Kako radnici i klijenti ulaze u aplikaciju: pošalji poveznicu → registriraju se → ti ovdje odobriš ulogu.'],
+ copyLink:['🔗 Link kopieren','🔗 Copy link','🔗 Kopiraj link','🔗 Bağlantıyı kopyala','🔗 Kopiraj poveznicu'],
+ copied:['Link kopiert','Link copied','Link kopiran','Bağlantı kopyalandı','Poveznica kopirana'],
+ you:['(Sie)','(you)','(ti)','(siz)','(ti)'],
+ myObjects:['Meine Objekte','My properties','Moji objekti','Binalarım','Moji objekti'],
+ lastTasks:['Zuletzt erledigt','Recently completed','Nedavno završeno','Son tamamlananlar','Nedavno završeno'],
+ netErr:['Keine Verbindung – bitte erneut versuchen.','No connection – please try again.','Nema veze – pokušaj ponovo.','Bağlantı yok – tekrar deneyin.','Nema veze – pokušaj ponovno.'],
+ hoursHint:['Stunden sehen nur Sie und der Inhaber.','Only you and the owner can see hours.','Sate vidiš samo ti i vlasnik.','Saatleri sadece siz ve sahip görür.','Sate vidiš samo ti i vlasnik.'],
+ forgot:['Passwort vergessen?','Forgot password?','Zaboravljena lozinka?','Şifremi unuttum','Zaboravljena lozinka?'],
+ resetSent:['E-Mail zum Zurücksetzen wurde gesendet.','Reset email sent.','Poslat je e-mail za promenu lozinke.','Sıfırlama e-postası gönderildi.','Poslan je e-mail za promjenu lozinke.'],
+ newPw:['Neues Passwort festlegen','Set new password','Postavi novu lozinku','Yeni şifre belirle','Postavi novu lozinku'],
+};
+let LANG = localStorage.getItem('mp_lang') || (LANGS.includes((navigator.language||'de').slice(0,2)) ? navigator.language.slice(0,2) : 'de');
+if(LANG==='bs') LANG='sr';
+const t = k => { const r=L[k]; if(!r) return k; return r[LANGS.indexOf(LANG)] || r[0]; };
+
+/* ================= Hilfsfunktionen ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const loc = () => LOCALES[LANG] || 'de-DE';
+const fmtD = d => d ? new Date(d).toLocaleDateString(loc(),{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
+const fmtT = d => d ? new Date(d).toLocaleTimeString(loc(),{hour:'2-digit',minute:'2-digit'}) : '';
+const fmtDT = d => fmtD(d)+' '+fmtT(d);
+const fmtDur = ms => { const m=Math.max(0,Math.round(ms/60000)); return Math.floor(m/60)+':'+String(m%60).padStart(2,'0'); };
+const fmtClock = ms => { const s=Math.max(0,Math.floor(ms/1000)); return Math.floor(s/3600)+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); };
+const pad = n => String(n).padStart(2,'0');
+const ymNow = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1); };
+const todayISO = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+const monthRange = ym => { const [y,m]=ym.split('-').map(Number); return [new Date(y,m-1,1).toISOString(), new Date(y,m,1).toISOString()]; };
+const roleName = r => t('r_'+r);
+function chk(r){ if(r.error) throw r.error; return r.data; }
+function toast(msg, ms=2600){ const el=$('#toast'); el.textContent=msg; el.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>el.style.display='none', ms); }
+function errMsg(e){ console.error(e); const m=(e&&(e.message||e.error_description))||String(e); return /fetch|network/i.test(m)?t('netErr'):m; }
+function modal(html){ closeModal(); const bg=document.createElement('div'); bg.className='modal-bg'; bg.id='mbg'; bg.innerHTML='<div class="modal">'+html+'</div>'; bg.addEventListener('click',e=>{ if(e.target===bg) closeModal(); }); document.body.appendChild(bg); }
+function closeModal(){ const m=$('#mbg'); if(m) m.remove(); }
+const val = id => { const el=document.getElementById(id); return el ? el.value.trim() : ''; };
+
+/* ================= Zustand ================= */
+let sb = null;
+const S = { uid:undefined, me:null, view:null, param:null, active:null, people:[], objFilter:{q:'',wd:false}, taskFilter:'open', hoursYM:ymNow(), hoursWorker:'', authMode:'login', recovery:false };
+
+function cfg(){
+  let url=SUPABASE_URL, key=SUPABASE_KEY;
+  if(!url||!key){ try{ const c=JSON.parse(localStorage.getItem('mp_cfg')||'{}'); url=c.url; key=c.key; }catch(e){} }
+  return url&&key ? {url,key} : null;
+}
+
+/* ================= Start ================= */
+function boot(){
+  const c=cfg();
+  if(!c) return renderSetup();
+  sb = supabase.createClient(c.url, c.key, {auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}});
+  sb.auth.onAuthStateChange((ev, session)=>{
+    if(ev==='PASSWORD_RECOVERY'){ S.recovery=true; setTimeout(renderNewPassword,0); return; }
+    const id = session?.user?.id || null;
+    if(id!==S.uid){ S.uid=id; setTimeout(startApp,0); }
+  });
+}
+
+function renderSetup(){
+  $('#app').innerHTML = `<div class="auth"><div class="logo">M<b>P</b></div><h1 class="center">${t('setupTitle')}</h1>
+  <p class="muted center">${t('setupText')}</p>
+  <label>Supabase Project URL</label><input id="su" placeholder="https://xxxx.supabase.co">
+  <label>Supabase anon / publishable key</label><input id="sk" placeholder="eyJ… / sb_publishable_…">
+  <div class="mact"><button class="btn" onclick="saveSetup()">${t('save')}</button></div></div>`;
+}
+function saveSetup(){
+  const url=val('su').replace(/\/+$/,''), key=val('sk');
+  if(!/^https:\/\/.+/.test(url)||key.length<20) return toast(t('required'));
+  localStorage.setItem('mp_cfg', JSON.stringify({url,key})); boot();
+}
+
+/* ================= Anmeldung ================= */
+function langPills(){
+  return `<div class="langs">${LANGS.map(l=>`<button class="chip ${l===LANG?'on':''}" onclick="setLang('${l}')">${LNAMES[l]}</button>`).join('')}</div>`;
+}
+function setLang(l){ LANG=l; localStorage.setItem('mp_lang',l); if(S.me){ sb.from('profiles').update({lang:l}).eq('id',S.me.id).then(()=>{}); S.me.lang=l; route(); } else renderAuth(); }
+
+function renderAuth(msg){
+  const reg = S.authMode==='register';
+  $('#app').innerHTML = `<div class="auth">
+   <div class="logo">M<b>P</b></div>
+   <h1 class="center" style="margin-bottom:2px">Meisterplan</h1>
+   <div class="center muted">Cvijetic Hausmeisterservice</div>
+   ${langPills()}
+   <div class="card">
+    <h3 style="margin:2px 0 4px">${reg?t('register'):t('login')}</h3>
+    ${reg?`<label>${t('fullName')} *</label><input id="af" autocomplete="name">
+    <label>${t('company')}</label><input id="ac" autocomplete="organization">`:''}
+    <label>${t('email')} *</label><input id="ae" type="email" autocomplete="email" inputmode="email">
+    <label>${t('password')} *</label><input id="ap" type="password" autocomplete="${reg?'new-password':'current-password'}">
+    <div id="aerr" class="err">${msg?esc(msg):''}</div>
+    <button class="btn big" style="margin-top:14px" id="abtn" onclick="doAuth()">${reg?t('register'):t('login')}</button>
+   </div>
+   <div class="center"><button class="link" onclick="S.authMode='${reg?'login':'register'}';renderAuth()">${reg?t('haveAccount'):t('noAccount')}</button>
+   ${reg?'':`<br><button class="link" onclick="forgotPw()">${t('forgot')}</button>`}</div>
+  </div>`;
+  const pw=$('#ap'); if(pw) pw.addEventListener('keydown',e=>{ if(e.key==='Enter') doAuth(); });
+}
+async function doAuth(){
+  const reg=S.authMode==='register', email=val('ae'), password=$('#ap').value, err=$('#aerr'), b=$('#abtn');
+  if(!email||!password||(reg&&!val('af'))){ err.textContent=t('required'); return; }
+  if(password.length<6){ err.textContent=t('pwShort'); return; }
+  b.disabled=true; err.textContent='';
+  try{
+    if(reg){
+      const r=await sb.auth.signUp({email,password,options:{data:{full_name:val('af'),company:val('ac'),lang:LANG},emailRedirectTo:location.origin+location.pathname}});
+      if(r.error) throw r.error;
+      if(!r.data.session){ S.authMode='login'; renderAuth(); $('#aerr').style.color='var(--green2)'; $('#aerr').textContent=t('checkEmail'); }
+    } else {
+      const r=await sb.auth.signInWithPassword({email,password}); if(r.error) throw r.error;
+    }
+  }catch(e){ err.textContent=errMsg(e); b.disabled=false; }
+}
+async function forgotPw(){
+  const email=val('ae'); if(!email){ $('#aerr').textContent=t('email')+' *'; return; }
+  const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  if(r.error) $('#aerr').textContent=errMsg(r.error); else { $('#aerr').style.color='var(--green2)'; $('#aerr').textContent=t('resetSent'); }
+}
+function renderNewPassword(){
+  modal(`<h3>${t('newPw')}</h3><label>${t('password')}</label><input id="np" type="password" autocomplete="new-password"><div id="nperr" class="err"></div>
+  <div class="mact"><button class="btn" onclick="saveNewPw()">${t('save')}</button></div>`);
+}
+async function saveNewPw(){
+  const p=$('#np').value; if(p.length<6){ $('#nperr').textContent=t('pwShort'); return; }
+  const r=await sb.auth.updateUser({password:p}); if(r.error){ $('#nperr').textContent=errMsg(r.error); return; }
+  S.recovery=false; closeModal(); toast(t('saved')); if(!S.me) startApp();
+}
+
+async function startApp(){
+  clearInterval(S.tick); S.active=null; S.me=null;
+  if(!S.uid){ closeModal(); return renderAuth(); }
+  $('#app').innerHTML='<div class="spin">…</div>';
+  try{
+    let me = chk(await sb.from('profiles').select('*').eq('id',S.uid).maybeSingle());
+    if(!me){ await new Promise(r=>setTimeout(r,1200)); me = chk(await sb.from('profiles').select('*').eq('id',S.uid).maybeSingle()); }
+    if(!me) throw new Error('Profil fehlt / profile missing');
+    S.me=me;
+    if(me.lang && LANGS.includes(me.lang)){ LANG=me.lang; localStorage.setItem('mp_lang',LANG); }
+    if(me.role==='pending'||me.role==='disabled') return renderPending();
+    S.people = chk(await sb.from('profiles').select('id,full_name,role,company,email,phone').order('full_name'));
+    if(me.role==='worker') await loadActive();
+    S.view = me.role==='owner' ? 'dash' : 'objects'; S.param=null;
+    route();
+  }catch(e){
+    $('#app').innerHTML=`<div class="auth"><div class="card"><div class="err">${esc(errMsg(e))}</div><div class="mact"><button class="btn l" onclick="logout()">${t('logout')}</button><button class="btn" onclick="startApp()">${t('refresh')}</button></div></div></div>`;
+  }
+}
+function renderPending(){
+  const dis=S.me.role==='disabled';
+  $('#app').innerHTML=`<div class="auth"><div class="logo">M<b>P</b></div>${langPills()}<div class="card center">
+  <h3>${dis?t('r_disabled'):t('pendingTitle')}</h3><p class="muted">${dis?t('disabledText'):t('pendingText')}</p>
+  <p class="small muted">${esc(S.me.full_name)} · ${esc(S.me.email)}</p>
+  <div class="mact" style="justify-content:center"><button class="btn l" onclick="logout()">${t('logout')}</button><button class="btn" onclick="startApp()">${t('refresh')}</button></div></div></div>`;
+}
+async function logout(){ clearInterval(S.tick); await sb.auth.signOut(); }
+
+/* ================= Gerüst ================= */
+function navItems(){
+  const r=S.me.role;
+  if(r==='owner') return [['dash','🏠','nav_dash'],['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat'],['team','👥','nav_team']];
+  if(r==='worker') return [['objects','🏢','nav_objects'],['hours','⏱','nav_hours'],['mat','📦','nav_mat']];
+  return [['objects','🏢','nav_objects'],['tasks','✅','nav_tasks']];
+}
+function go(view,param){ S.view=view; S.param=param||null; route(); window.scrollTo(0,0); }
+function shell(){
+  const first=(S.me.full_name||S.me.email||'').split(' ')[0];
+  const navView = S.view==='obj' ? 'objects' : S.view;
+  $('#app').innerHTML = `<header><div class="brand"><div class="logo">M<b>P</b></div><div style="min-width:0"><div class="bt">Meisterplan</div><div class="bs">Cvijetic Hausmeisterservice</div></div></div>
+   <button class="hbtn" onclick="openProfile()">👤 ${esc(first)}</button></header>
+   <div id="tbar"></div><main id="main"><div class="spin">…</div></main>
+   <nav class="bottom"><div class="in">${navItems().map(n=>`<button class="nb ${navView===n[0]?'on':''}" onclick="go('${n[0]}')"><span>${n[1]}</span>${t(n[2])}</button>`).join('')}</div></nav>`;
+  drawTimer();
+}
+async function route(){
+  if(!S.me) return;
+  shell();
+  const V={dash:vDash,objects:vObjects,obj:vObj,tasks:vTasks,hours:vHours,mat:vMat,team:vTeam};
+  const f=V[S.view]||vObjects;
+  try{ await f(S.param); }catch(e){ $('#main').innerHTML=`<div class="card"><div class="err">${esc(errMsg(e))}</div><div class="mact"><button class="btn" onclick="route()">${t('refresh')}</button></div></div>`; }
+}
+const main = h => { $('#main').innerHTML = h; };
+const person = id => S.people.find(p=>p.id===id);
+const pname = id => { const p=person(id); return p ? (p.full_name||p.email) : '–'; };
+const workers = () => S.people.filter(p=>p.role==='worker'||p.role==='owner');
+const clients = () => S.people.filter(p=>p.role==='client');
+
+/* ================= Zeiterfassung ================= */
+async function loadActive(){
+  const r=await sb.from('time_entries').select('*, objects(name)').eq('worker_id',S.me.id).is('ended_at',null).maybeSingle();
+  S.active = r.data || null;
+}
+function drawTimer(){
+  clearInterval(S.tick);
+  const el=$('#tbar'); if(!el) return;
+  if(!S.active){ el.innerHTML=''; return; }
+  const a=S.active;
+  el.innerHTML=`<div class="tbar" onclick="go('obj','${a.object_id}')"><span>⏱</span><span class="tn">${esc(a.objects?.name||'')}</span><b id="tclock">${fmtClock(Date.now()-new Date(a.started_at))}</b><button onclick="event.stopPropagation();stopWork()">${t('stop')}</button></div>`;
+  S.tick=setInterval(()=>{ const c=$('#tclock'); if(c&&S.active) c.textContent=fmtClock(Date.now()-new Date(S.active.started_at)); },1000);
+}
+async function startWork(oid){
+  if(S.active) return toast(t('otherRunning'));
+  try{
+    S.active = chk(await sb.from('time_entries').insert({worker_id:S.me.id, object_id:oid, started_at:new Date().toISOString()}).select('*, objects(name)').single());
+    route();
+  }catch(e){ toast(errMsg(e)); await loadActive(); route(); }
+}
+function stopWork(){
+  if(!S.active) return;
+  modal(`<h3>${t('stopWork')}</h3><div class="muted">${esc(S.active.objects?.name||'')} · ${fmtClock(Date.now()-new Date(S.active.started_at))}</div>
+  <label>${t('noteOpt')}</label><textarea id="snote"></textarea>
+  <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn r" id="sbtn" onclick="doStop()">${t('stopWork')}</button></div>`);
+}
+async function doStop(){
+  $('#sbtn').disabled=true;
+  try{
+    chk(await sb.from('time_entries').update({ended_at:new Date().toISOString(), note:val('snote')||null}).eq('id',S.active.id));
+    S.active=null; closeModal(); toast(t('saved')); route();
+  }catch(e){ $('#sbtn').disabled=false; toast(errMsg(e)); }
+}
+
+/* ================= Übersicht (Inhaber) ================= */
+async function vDash(){
+  const [ym0,ym1]=monthRange(ymNow());
+  const [act,ot,mr,pend,hrs,wdc]=await Promise.all([
+    sb.from('time_entries').select('id,started_at,worker_id,object_id,objects(name,winterdienst)').is('ended_at',null),
+    sb.from('tasks').select('id',{count:'exact',head:true}).neq('status','done'),
+    sb.from('material_requests').select('id',{count:'exact',head:true}).eq('status','open'),
+    sb.from('profiles').select('id',{count:'exact',head:true}).eq('role','pending'),
+    sb.from('time_entries').select('started_at,ended_at').gte('started_at',ym0).lt('started_at',ym1),
+    sb.from('objects').select('id',{count:'exact',head:true}).eq('winterdienst',true).eq('active',true),
+  ]);
+  [act,ot,mr,pend,hrs,wdc].forEach(chk);
+  const ms=(hrs.data||[]).reduce((s,e)=>s+((e.ended_at?new Date(e.ended_at):new Date())-new Date(e.started_at)),0);
+  const a=act.data||[];
+  main(`<h1>${t('nav_dash')}</h1>
+  ${pend.count?`<div class="card click" style="border-color:var(--amber);background:#fff8ec" onclick="go('team')">⚠️ <b>${pend.count}</b> · ${t('pendingUsers')} ›</div>`:''}
+  <div class="stats">
+   <div class="stat" onclick="go('tasks')"><div class="n">${ot.count||0}</div><div class="muted">${t('openTasks')}</div></div>
+   <div class="stat" onclick="go('mat')"><div class="n">${mr.count||0}</div><div class="muted">${t('openRequests')}</div></div>
+   <div class="stat g" onclick="go('hours')"><div class="n">${fmtDur(ms)}</div><div class="muted">${t('hoursMonth')}</div></div>
+   <div class="stat" onclick="S.objFilter.wd=true;go('objects')"><div class="n">❄ ${wdc.count||0}</div><div class="muted">${t('wd')}</div></div>
+  </div>
+  <h2>🟢 ${t('activeNow')}</h2>
+  ${a.length? a.map(e=>`<div class="card click row" onclick="go('obj','${e.object_id}')"><div class="grow"><b>${esc(pname(e.worker_id))}</b><div class="muted">${esc(e.objects?.name||'')} ${e.objects?.winterdienst?'<span class="badge b-wd">❄</span>':''}</div></div><div class="badge b-done">${fmtT(e.started_at)} · ${fmtDur(Date.now()-new Date(e.started_at))}</div></div>`).join('') : `<div class="empty">${t('nobody')}</div>`}`);
+}
+
+/* ================= Objekte ================= */
+async function vObjects(){
+  let q=sb.from('objects').select('*').order('name');
+  if(S.me.role!=='owner') q=q.eq('active',true);
+  const [objs,tk]=await Promise.all([q, sb.from('tasks').select('object_id').neq('status','done')]);
+  S.objs=chk(objs); const counts={}; (chk(tk)||[]).forEach(x=>counts[x.object_id]=(counts[x.object_id]||0)+1); S.objCounts=counts;
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${S.me.role==='owner'?t('nav_objects'):t('myObjects')}</h1>${S.me.role==='owner'?`<button class="btn g sm" onclick="objectForm()">${t('newObject')}</button>`:''}</div>
+  <input id="oq" placeholder="${t('search')}" value="${esc(S.objFilter.q)}" oninput="S.objFilter.q=this.value;drawObjList()" style="margin-bottom:10px">
+  <div class="chips"><button class="chip ${!S.objFilter.wd?'on':''}" onclick="S.objFilter.wd=false;drawObjList()">${t('all')}</button><button class="chip ${S.objFilter.wd?'on':''}" onclick="S.objFilter.wd=true;drawObjList()">${t('wdOnly')}</button></div>
+  <div id="olist"></div>`);
+  drawObjList();
+}
+function drawObjList(){
+  const f=S.objFilter, q=f.q.toLowerCase();
+  document.querySelectorAll('.chips .chip').forEach((c,i)=>c.classList.toggle('on', i===(f.wd?1:0)));
+  const list=(S.objs||[]).filter(o=>(!f.wd||o.winterdienst)&&(!q||[o.name,o.address,o.city].join(' ').toLowerCase().includes(q)));
+  list.sort((a,b)=>(b.winterdienst-a.winterdienst)||(b.active-a.active)||a.name.localeCompare(b.name));
+  $('#olist').innerHTML = list.length ? list.map(o=>{
+    const n=S.objCounts[o.id]||0, run=S.active&&S.active.object_id===o.id;
+    return `<div class="card obj click ${o.winterdienst?'wd':''}" style="${o.active?'':'opacity:.55'}" onclick="go('obj','${o.id}')">
+     <div class="ot">${esc(o.name)} ${o.winterdienst?`<span class="badge b-wd">❄ ${t('wd')}</span>`:''} ${o.active?'':`<span class="badge">${t('inactive')}</span>`} ${run?`<span class="badge b-done">⏱ ${t('runningNow')}</span>`:''}</div>
+     <div class="muted">${esc([o.address,o.city].filter(Boolean).join(', '))}</div>
+     <div class="row small muted" style="margin-top:4px">${n?`<span class="badge b-open">${n} ${t('openTasks')}</span>`:''}${S.me.role==='owner'&&o.client_id?`<span>· ${esc(pname(o.client_id))}</span>`:''}</div></div>`;
+  }).join('') : `<div class="empty">${t('noObjects')}</div>`;
+}
+
+async function vObj(id){
+  const role=S.me.role;
+  const [o,tasks,photos,ow]=await Promise.all([
+    sb.from('objects').select('*').eq('id',id).single(),
+    sb.from('tasks').select('*').eq('object_id',id).order('status',{ascending:true}).order('created_at',{ascending:false}),
+    sb.from('photos').select('*').eq('object_id',id).order('taken_at',{ascending:false}).limit(60),
+    role==='owner' ? sb.from('object_workers').select('worker_id').eq('object_id',id) : Promise.resolve({data:[]}),
+  ]);
+  const obj=chk(o), tl=chk(tasks)||[], pl=chk(photos)||[], wl=(chk(ow)||[]).map(x=>x.worker_id);
+  S.curObj=obj; S.curTasks=tl;
+  let urls={};
+  if(pl.length){ const r=await sb.storage.from('photos').createSignedUrls(pl.map(p=>p.path),3600); (r.data||[]).forEach((u,i)=>{ if(u.signedUrl) urls[pl[i].path]=u.signedUrl; }); }
+  S.curPhotos=pl.map(p=>({...p,url:urls[p.path]}));
+  const addr=[obj.address,obj.city].filter(Boolean).join(', ');
+  const canWork = role==='worker' || role==='owner';
+  let timer='';
+  if(role==='worker'){
+    if(S.active&&S.active.object_id===id) timer=`<div class="card" style="border-color:var(--green)"><div class="muted">${t('runningHere')} ${fmtT(S.active.started_at)}</div><button class="btn r big" style="margin-top:8px" onclick="stopWork()">${t('stopWork')}</button></div>`;
+    else timer=`<button class="btn g big" style="margin-bottom:10px" ${S.active?'disabled':''} onclick="startWork('${id}')">${t('startWork')}</button>${S.active?`<div class="muted small center" style="margin:-4px 0 10px">${t('otherRunning')}</div>`:''}`;
+  }
+  const open=tl.filter(x=>x.status!=='done'), done=tl.filter(x=>x.status==='done').slice(0,10);
+  main(`<button class="link" style="padding:0 0 8px" onclick="go('objects')">${t('back')}</button>
+  <div class="card obj ${obj.winterdienst?'wd':''}">
+   <div class="row"><h1 class="grow" style="margin:0">${esc(obj.name)}</h1>${role==='owner'?`<button class="btn l sm" onclick="objectForm('${id}')">✏️ ${t('edit')}</button>`:''}</div>
+   ${obj.winterdienst?`<div style="margin:6px 0"><span class="badge b-wd">❄ ${t('wd')}</span></div>`:''}
+   ${addr?`<div class="muted">${esc(addr)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}" target="_blank" rel="noopener">${t('route')}</a></div>`:''}
+   ${obj.notes?`<div style="margin-top:8px;white-space:pre-wrap">${esc(obj.notes)}</div>`:''}
+   ${role==='owner'?`<div class="small muted" style="margin-top:8px">👷 ${wl.length?wl.map(pname).map(esc).join(', '):'–'}${obj.client_id?` · 🏢 ${esc(pname(obj.client_id))}`:''}</div>`:''}
+  </div>
+  ${timer}
+  <h2>✅ ${t('nav_tasks')}<span class="sp"></span><button class="btn sm" onclick="taskForm('${id}')">${t('newTask')}</button></h2>
+  ${open.length?open.map(taskCard).join(''):`<div class="empty">${t('noTasks')}</div>`}
+  ${done.length?`<div class="muted small" style="margin:12px 0 6px">${t('lastTasks')}</div>${done.map(taskCard).join('')}`:''}
+  <h2>📷 ${t('photos')}<span class="sp"></span>${canWork?`<label class="btn sm" style="margin:0;color:#fff">${t('addPhoto')}<input type="file" accept="image/*" multiple hidden onchange="uploadPhotos('${id}',this.files)"></label>`:''}</h2>
+  ${S.curPhotos.length?`<div class="grid">${S.curPhotos.map((p,i)=>`<div class="ph" onclick="viewPhoto(${i})">${p.url?`<img loading="lazy" src="${esc(p.url)}" alt="">`:''}<span>${fmtDT(p.taken_at)}</span></div>`).join('')}</div>`:`<div class="empty">${t('noPhotos')}</div>`}
+  ${role==='worker'?`<div style="margin-top:18px"><button class="btn l" onclick="matForm('${id}')">${t('newRequest')}</button></div>`:''}`);
+}
+
+function objectForm(id){
+  const o = id ? S.curObj : {name:'',address:'',city:'',client_id:null,winterdienst:false,notes:'',active:true};
+  const assigned = id ? (S.curAssigned||[]) : [];
+  const ws=S.people.filter(p=>p.role==='worker');
+  const go2 = async () => {
+    let cur=[];
+    if(id){ const r=await sb.from('object_workers').select('worker_id').eq('object_id',id); cur=(r.data||[]).map(x=>x.worker_id); }
+    modal(`<h3>${id?t('editObject'):t('newObject').replace('+ ','')}</h3>
+    <label>${t('name')} *</label><input id="fn" value="${esc(o.name)}">
+    <label>${t('address')}</label><input id="fa" value="${esc(o.address)}">
+    <label>${t('city')}</label><input id="fc" value="${esc(o.city)}" placeholder="74076 Heilbronn">
+    <label>${t('client')}</label><select id="fcl"><option value="">${t('none')}</option>${clients().map(c=>`<option value="${c.id}" ${c.id===o.client_id?'selected':''}>${esc(c.company?c.company+' – ':'')}${esc(c.full_name||c.email)}</option>`).join('')}</select>
+    <label class="chk"><input type="checkbox" id="fwd" ${o.winterdienst?'checked':''}>❄ ${t('wd')}</label>
+    <label class="chk"><input type="checkbox" id="fact" ${o.active?'checked':''}>${t('active')}</label>
+    <label>${t('notes')}</label><textarea id="fno">${esc(o.notes)}</textarea>
+    <label>${t('workers')}</label>${ws.length?ws.map(w=>`<label class="chk"><input type="checkbox" class="fw" value="${w.id}" ${cur.includes(w.id)?'checked':''}>${esc(w.full_name||w.email)}</label>`).join(''):`<div class="muted small">${t('noWorkersYet')}</div>`}
+    <div class="mact">${id?`<button class="btn r" style="margin-right:auto" onclick="deleteObject('${id}')">${t('delete')}</button>`:''}<button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="fsave" onclick="saveObject(${id?`'${id}'`:'null'})">${t('save')}</button></div>`);
+  };
+  go2();
+}
+async function saveObject(id){
+  const rec={name:val('fn'),address:val('fa')||null,city:val('fc')||null,client_id:val('fcl')||null,winterdienst:$('#fwd').checked,active:$('#fact').checked,notes:val('fno')||null};
+  if(!rec.name) return toast(t('required'));
+  const sel=[...document.querySelectorAll('.fw:checked')].map(x=>x.value);
+  $('#fsave').disabled=true;
+  try{
+    let oid=id;
+    if(id) chk(await sb.from('objects').update(rec).eq('id',id));
+    else oid=chk(await sb.from('objects').insert(rec).select('id').single()).id;
+    chk(await sb.from('object_workers').delete().eq('object_id',oid));
+    if(sel.length) chk(await sb.from('object_workers').insert(sel.map(w=>({object_id:oid,worker_id:w}))));
+    closeModal(); toast(t('saved')); go('obj',oid);
+  }catch(e){ $('#fsave').disabled=false; toast(errMsg(e)); }
+}
+async function deleteObject(id){
+  if(!confirm(t('confirmDelete'))) return;
+  try{ chk(await sb.from('objects').delete().eq('id',id)); closeModal(); go('objects'); }catch(e){ toast(errMsg(e)); }
+}
+
+/* ================= Aufgaben ================= */
+function taskCard(x){
+  const role=S.me.role, canStatus = role==='owner' || role==='worker';
+  const obj = x._objName ? `<div class="small muted">🏢 ${esc(x._objName)}</div>` : '';
+  return `<div class="card">
+   <div class="row"><div class="grow"><b>${esc(x.title)}</b></div><span class="badge b-${x.status}">${t('st_'+x.status)}</span></div>
+   ${obj}
+   ${x.description?`<div style="white-space:pre-wrap;margin-top:4px">${esc(x.description)}</div>`:''}
+   <div class="small muted" style="margin-top:6px">${x.assigned_to?`👷 ${esc(pname(x.assigned_to))} · `:''}${x.due_date?`📅 ${fmtD(x.due_date)} · `:''}${t('createdBy')}: ${esc(pname(x.created_by))} · ${fmtD(x.created_at)}${x.done_at?` · ✓ ${fmtDT(x.done_at)}`:''}</div>
+   ${canStatus?`<div class="row" style="margin-top:8px">
+     ${x.status!=='in_progress'&&x.status!=='done'?`<button class="btn l sm" onclick="setTaskStatus('${x.id}','in_progress')">${t('st_in_progress')}</button>`:''}
+     ${x.status!=='done'?`<button class="btn g sm" onclick="setTaskStatus('${x.id}','done')">✓ ${t('st_done')}</button>`:`<button class="btn l sm" onclick="setTaskStatus('${x.id}','open')">↺ ${t('st_open')}</button>`}
+     ${role==='owner'?`<span class="grow"></span><button class="btn l sm" onclick="taskForm('${x.object_id}','${x.id}')">✏️</button><button class="btn l sm" onclick="deleteTask('${x.id}')">🗑</button>`:''}
+   </div>`:''}
+  </div>`;
+}
+async function setTaskStatus(id,st){
+  try{ chk(await sb.from('tasks').update({status:st,done_at:st==='done'?new Date().toISOString():null}).eq('id',id)); toast(t('saved')); route(); }catch(e){ toast(errMsg(e)); }
+}
+async function deleteTask(id){
+  if(!confirm(t('confirmDelete'))) return;
+  try{ chk(await sb.from('tasks').delete().eq('id',id)); route(); }catch(e){ toast(errMsg(e)); }
+}
+async function taskForm(oid, tid){
+  const role=S.me.role;
+  let x={title:'',description:'',assigned_to:null,due_date:'',object_id:oid||''};
+  if(tid){ x = chk(await sb.from('tasks').select('*').eq('id',tid).single()); }
+  let objs=[];
+  if(!oid){ objs=chk(await sb.from('objects').select('id,name').eq('active',true).order('name')); }
+  modal(`<h3>${tid?t('edit'):t('newTask').replace('+ ','')}</h3>
+   ${oid?`<div class="muted">🏢 ${esc((S.curObj&&S.curObj.id===oid)?S.curObj.name:'')}</div><input type="hidden" id="tob" value="${oid}">`:`<label>${t('object')} *</label><select id="tob"><option value="">${t('chooseObject')}</option>${objs.map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>`}
+   <label>${t('title')} *</label><input id="tti" value="${esc(x.title)}">
+   <label>${t('description')}</label><textarea id="tde">${esc(x.description)}</textarea>
+   ${role==='owner'?`<label>${t('assignedTo')}</label><select id="tas"><option value="">${t('none')}</option>${workers().map(w=>`<option value="${w.id}" ${w.id===x.assigned_to?'selected':''}>${esc(w.full_name||w.email)}</option>`).join('')}</select>`:''}
+   <label>${t('due')}</label><input id="tdu" type="date" value="${esc(x.due_date||'')}">
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="tsave" onclick="saveTask(${tid?`'${tid}'`:'null'})">${t('save')}</button></div>`);
+}
+async function saveTask(tid){
+  const rec={object_id:val('tob'),title:val('tti'),description:val('tde')||null,due_date:val('tdu')||null};
+  if(!rec.object_id||!rec.title) return toast(t('required'));
+  if(S.me.role==='owner') rec.assigned_to=val('tas')||null;
+  else if(S.me.role==='worker' && !tid) rec.assigned_to=S.me.id;
+  $('#tsave').disabled=true;
+  try{
+    if(tid) chk(await sb.from('tasks').update(rec).eq('id',tid));
+    else chk(await sb.from('tasks').insert({...rec,created_by:S.me.id}));
+    closeModal(); toast(t('saved')); route();
+  }catch(e){ $('#tsave').disabled=false; toast(errMsg(e)); }
+}
+async function vTasks(){
+  const f=S.taskFilter;
+  let q=sb.from('tasks').select('*, objects(name)').order('created_at',{ascending:false}).limit(300);
+  if(f==='open') q=q.neq('status','done'); else if(f==='done') q=q.eq('status','done');
+  const list=(chk(await q)||[]).map(x=>({...x,_objName:x.objects?.name}));
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_tasks')}</h1><button class="btn g sm" onclick="taskForm()">${t('newTask')}</button></div>
+  <div class="chips">${[['open','st_open'],['done','st_done'],['all','all']].map(c=>`<button class="chip ${f===c[0]?'on':''}" onclick="S.taskFilter='${c[0]}';route()">${t(c[1])}</button>`).join('')}</div>
+  ${list.length?list.map(taskCard).join(''):`<div class="empty">${t('noTasks')}</div>`}`);
+}
+
+/* ================= Fotos ================= */
+async function loadImage(file){
+  try{ return await createImageBitmap(file,{imageOrientation:'from-image'}); }
+  catch(e){ return await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=URL.createObjectURL(file); }); }
+}
+async function stampImage(file, when, label){
+  const img=await loadImage(file);
+  const w0=img.width, h0=img.height, sc=Math.min(1,1600/Math.max(w0,h0));
+  const w=Math.round(w0*sc), h=Math.round(h0*sc);
+  const c=document.createElement('canvas'); c.width=w; c.height=h;
+  const x=c.getContext('2d'); x.drawImage(img,0,0,w,h);
+  const fs=Math.max(16,Math.round(w/38)), p=Math.round(fs*0.55);
+  const txt=fmtDT(when)+'  ·  '+label;
+  x.fillStyle='rgba(0,0,0,.55)'; x.fillRect(0,h-fs-p*2,w,fs+p*2);
+  x.fillStyle='#fff'; x.font=`600 ${fs}px system-ui,-apple-system,sans-serif`; x.textBaseline='middle';
+  x.fillText(txt,p,h-p-fs/2,w-p*2);
+  return await new Promise(r=>c.toBlob(r,'image/jpeg',0.82));
+}
+async function uploadPhotos(oid, files){
+  if(!files||!files.length) return;
+  toast(t('uploading'),60000);
+  const label=(S.curObj&&S.curObj.id===oid)?S.curObj.name:'';
+  try{
+    for(const f of files){
+      const lm=f.lastModified?new Date(f.lastModified):new Date();
+      const when=(lm>new Date()||lm<new Date(Date.now()-90*864e5))?new Date():lm;
+      const blob=await stampImage(f,when,label);
+      const path=`${oid}/${Date.now()}-${Math.random().toString(36).slice(2,10)}.jpg`;
+      const up=await sb.storage.from('photos').upload(path,blob,{contentType:'image/jpeg',upsert:false});
+      if(up.error) throw up.error;
+      chk(await sb.from('photos').insert({object_id:oid,path,taken_at:when.toISOString(),uploaded_by:S.me.id}));
+    }
+    toast(t('uploaded')); route();
+  }catch(e){ toast(errMsg(e),5000); }
+}
+function viewPhoto(i){
+  const p=S.curPhotos[i]; if(!p) return;
+  const canDel=S.me.role==='owner'||p.uploaded_by===S.me.id;
+  modal(`${p.url?`<img src="${esc(p.url)}" style="width:100%;border-radius:10px;display:block">`:''}
+  <div class="muted" style="margin-top:8px">${fmtDT(p.taken_at)} · ${esc(pname(p.uploaded_by))}</div>
+  <div class="mact">${canDel?`<button class="btn r" style="margin-right:auto" onclick="deletePhoto(${i})">${t('delete')}</button>`:''}${p.url?`<a class="btn l" href="${esc(p.url)}" target="_blank" rel="noopener">⬇</a>`:''}<button class="btn" onclick="closeModal()">${t('close')}</button></div>`);
+}
+async function deletePhoto(i){
+  const p=S.curPhotos[i]; if(!p||!confirm(t('confirmDelete'))) return;
+  try{ await sb.storage.from('photos').remove([p.path]); chk(await sb.from('photos').delete().eq('id',p.id)); closeModal(); route(); }catch(e){ toast(errMsg(e)); }
+}
+
+/* ================= Stunden ================= */
+async function vHours(){
+  const owner=S.me.role==='owner';
+  const [a,b]=monthRange(S.hoursYM);
+  let q=sb.from('time_entries').select('*, objects(name)').gte('started_at',a).lt('started_at',b).order('started_at',{ascending:false});
+  if(owner&&S.hoursWorker) q=q.eq('worker_id',S.hoursWorker);
+  if(!owner) q=q.eq('worker_id',S.me.id);
+  const list=chk(await q)||[]; S.hoursList=list;
+  const dur=e=>(e.ended_at?new Date(e.ended_at):new Date())-new Date(e.started_at);
+  const tot=list.reduce((s,e)=>s+dur(e),0);
+  const per={}; list.forEach(e=>per[e.worker_id]=(per[e.worker_id]||0)+dur(e));
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_hours')}</h1><button class="btn g sm" onclick="hourForm()">${t('manualEntry')}</button></div>
+  <div class="row" style="margin-bottom:12px">
+   <div class="grow"><label style="margin-top:0">${t('month')}</label><input type="month" value="${S.hoursYM}" onchange="S.hoursYM=this.value||ymNow();route()"></div>
+   ${owner?`<div class="grow"><label style="margin-top:0">${t('worker')}</label><select onchange="S.hoursWorker=this.value;route()"><option value="">${t('all')}</option>${workers().map(w=>`<option value="${w.id}" ${w.id===S.hoursWorker?'selected':''}>${esc(w.full_name||w.email)}</option>`).join('')}</select></div>`:''}
+  </div>
+  <div class="card row"><div class="grow"><b>${t('total')}: ${fmtDur(tot)} h</b>${owner&&!S.hoursWorker&&Object.keys(per).length>1?`<div class="small muted">${Object.entries(per).map(([w,ms])=>esc(pname(w))+': '+fmtDur(ms)).join(' · ')}</div>`:''}</div>${list.length?`<button class="btn l sm" onclick="exportCsv()">${t('exportCsv')}</button>`:''}</div>
+  ${!owner?`<div class="small muted" style="margin:-4px 0 10px">🔒 ${t('hoursHint')}</div>`:''}
+  ${list.length?`<div class="tw"><table><tr><th>${t('date')}</th>${owner?`<th>${t('worker')}</th>`:''}<th>${t('object')}</th><th>${t('from')}–${t('to')}</th><th>${t('duration')}</th><th>${t('note')}</th><th></th></tr>
+   ${list.map(e=>`<tr><td>${fmtD(e.started_at)}</td>${owner?`<td>${esc(pname(e.worker_id))}</td>`:''}<td>${esc(e.objects?.name||'–')}</td><td>${fmtT(e.started_at)}–${e.ended_at?fmtT(e.ended_at):`<span class="badge b-done">${t('runningNow')}</span>`}</td><td><b>${fmtDur(dur(e))}</b></td><td class="small">${esc(e.note||'')}</td><td>${e.ended_at?`<button class="btn l sm" onclick="hourForm('${e.id}')">✏️</button>`:''}</td></tr>`).join('')}
+  </table></div>`:`<div class="empty">${t('noEntries')}</div>`}`);
+}
+async function hourForm(id){
+  const owner=S.me.role==='owner';
+  const e = id ? S.hoursList.find(x=>x.id===id) : null;
+  const objs=chk(await sb.from('objects').select('id,name').eq('active',true).order('name'));
+  const d = e ? new Date(e.started_at) : new Date();
+  const dIso=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  const hm=x=>{ const z=new Date(x); return pad(z.getHours())+':'+pad(z.getMinutes()); };
+  modal(`<h3>${e?t('edit'):t('manualEntry').replace('+ ','')}</h3>
+   ${owner?`<label>${t('worker')} *</label><select id="hw">${workers().map(w=>`<option value="${w.id}" ${(e?e.worker_id:(S.hoursWorker||S.me.id))===w.id?'selected':''}>${esc(w.full_name||w.email)}</option>`).join('')}</select>`:''}
+   <label>${t('object')} *</label><select id="ho"><option value="">${t('chooseObject')}</option>${objs.map(o=>`<option value="${o.id}" ${e&&e.object_id===o.id?'selected':''}>${esc(o.name)}</option>`).join('')}</select>
+   <label>${t('date')} *</label><input id="hd" type="date" value="${dIso}">
+   <div class="row"><div class="grow"><label>${t('from')} *</label><input id="hf" type="time" value="${e?hm(e.started_at):'07:00'}"></div><div class="grow"><label>${t('to')} *</label><input id="ht" type="time" value="${e&&e.ended_at?hm(e.ended_at):'08:00'}"></div></div>
+   <label>${t('note')}</label><textarea id="hn">${esc(e?e.note:'')}</textarea>
+   <div class="mact">${e?`<button class="btn r" style="margin-right:auto" onclick="deleteHour('${id}')">${t('delete')}</button>`:''}<button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="hsave" onclick="saveHour(${id?`'${id}'`:'null'})">${t('save')}</button></div>`);
+}
+async function saveHour(id){
+  const oid=val('ho'), d=val('hd'), f=val('hf'), to=val('ht');
+  if(!oid||!d||!f||!to) return toast(t('required'));
+  const s=new Date(d+'T'+f), en=new Date(d+'T'+to);
+  if(en<=s) return toast(t('endBeforeStart'));
+  const rec={object_id:oid,started_at:s.toISOString(),ended_at:en.toISOString(),note:val('hn')||null,worker_id:S.me.role==='owner'?val('hw'):S.me.id};
+  $('#hsave').disabled=true;
+  try{
+    if(id) chk(await sb.from('time_entries').update(rec).eq('id',id)); else chk(await sb.from('time_entries').insert(rec));
+    closeModal(); toast(t('saved')); route();
+  }catch(e){ $('#hsave').disabled=false; toast(errMsg(e)); }
+}
+async function deleteHour(id){
+  if(!confirm(t('confirmDelete'))) return;
+  try{ chk(await sb.from('time_entries').delete().eq('id',id)); closeModal(); route(); }catch(e){ toast(errMsg(e)); }
+}
+function exportCsv(){
+  const rows=[['Datum','Mitarbeiter','Objekt','Beginn','Ende','Stunden','Notiz']];
+  S.hoursList.slice().reverse().forEach(e=>{
+    const ms=(e.ended_at?new Date(e.ended_at):new Date())-new Date(e.started_at);
+    rows.push([fmtD(e.started_at),pname(e.worker_id),e.objects?.name||'',fmtT(e.started_at),e.ended_at?fmtT(e.ended_at):'',(ms/36e5).toFixed(2).replace('.',','),e.note||'']);
+  });
+  const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(';')).join('\r\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`Stunden_${S.hoursYM}${S.hoursWorker?'_'+pname(S.hoursWorker).replace(/\s+/g,'_'):''}.csv`; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ================= Material ================= */
+async function vMat(){
+  const owner=S.me.role==='owner';
+  let q=sb.from('material_requests').select('*, objects(name)').order('created_at',{ascending:false}).limit(200);
+  if(!owner) q=q.eq('worker_id',S.me.id);
+  const list=chk(await q)||[];
+  const open=list.filter(x=>x.status!=='done'), done=list.filter(x=>x.status==='done').slice(0,20);
+  const card=x=>`<div class="card"><div class="row"><div class="grow"><b>${esc(x.item)}</b>${x.quantity?` · ${esc(x.quantity)}`:''}</div><span class="badge ${x.status==='open'?'b-open':x.status==='ordered'?'b-in_progress':'b-done'}">${t('mr_'+x.status)}</span></div>
+   <div class="small muted">${owner?esc(pname(x.worker_id))+' · ':''}${x.objects?.name?'🏢 '+esc(x.objects.name)+' · ':''}${fmtDT(x.created_at)}</div>
+   ${owner?`<div class="row" style="margin-top:8px">${x.status==='open'?`<button class="btn l sm" onclick="setMat('${x.id}','ordered')">${t('mr_ordered')}</button>`:''}${x.status!=='done'?`<button class="btn g sm" onclick="setMat('${x.id}','done')">✓ ${t('mr_done')}</button>`:''}<span class="grow"></span><button class="btn l sm" onclick="delMat('${x.id}')">🗑</button></div>`:''}</div>`;
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_mat')}</h1>${!owner?`<button class="btn g sm" onclick="matForm()">${t('newRequest')}</button>`:''}</div>
+   ${open.length?open.map(card).join(''):`<div class="empty">${t('noRequests')}</div>`}
+   ${done.length?`<div class="muted small" style="margin:14px 0 6px">${t('mr_done')}</div>${done.map(card).join('')}`:''}`);
+}
+async function matForm(oid){
+  const objs=chk(await sb.from('objects').select('id,name').eq('active',true).order('name'));
+  modal(`<h3>${t('newRequest')}</h3>
+   <label>${t('item')} *</label><input id="mi" placeholder="Streusalz, Müllsäcke, …">
+   <label>${t('qty')}</label><input id="mq" placeholder="z. B. 10 Sack">
+   <label>${t('object')}</label><select id="mo"><option value="">${t('none')}</option>${objs.map(o=>`<option value="${o.id}" ${o.id===oid?'selected':''}>${esc(o.name)}</option>`).join('')}</select>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="msave" onclick="saveMat()">${t('save')}</button></div>`);
+}
+async function saveMat(){
+  const item=val('mi'); if(!item) return toast(t('required'));
+  $('#msave').disabled=true;
+  try{ chk(await sb.from('material_requests').insert({worker_id:S.me.id,item,quantity:val('mq')||null,object_id:val('mo')||null})); closeModal(); toast(t('requestSent')); if(S.view==='mat') route(); }
+  catch(e){ $('#msave').disabled=false; toast(errMsg(e)); }
+}
+async function setMat(id,st){ try{ chk(await sb.from('material_requests').update({status:st}).eq('id',id)); route(); }catch(e){ toast(errMsg(e)); } }
+async function delMat(id){ if(!confirm(t('confirmDelete'))) return; try{ chk(await sb.from('material_requests').delete().eq('id',id)); route(); }catch(e){ toast(errMsg(e)); } }
+
+/* ================= Team (Inhaber) ================= */
+async function vTeam(){
+  S.people = chk(await sb.from('profiles').select('id,full_name,role,company,email,phone').order('full_name'));
+  const order={pending:0,owner:1,worker:2,client:3,disabled:4};
+  const list=S.people.slice().sort((a,b)=>order[a.role]-order[b.role]||(a.full_name||'').localeCompare(b.full_name||''));
+  const appUrl=location.origin+location.pathname;
+  main(`<h1>${t('nav_team')}</h1>
+  <div class="card" style="background:#f2f8f2;border-color:#cfe6cf"><div class="small">${t('inviteText')}</div><div class="row" style="margin-top:8px"><code class="grow small" style="word-break:break-all">${esc(appUrl)}</code><button class="btn g sm" onclick="copyLink()">${t('copyLink')}</button></div></div>
+  ${list.map(p=>`<div class="card" style="${p.role==='pending'?'border-color:var(--amber);background:#fff8ec':''}">
+   <div class="row"><div class="grow"><b>${esc(p.full_name||'–')}</b> ${p.id===S.me.id?`<span class="muted small">${t('you')}</span>`:''}
+    <div class="small muted">${esc(p.email||'')}${p.phone?' · '+esc(p.phone):''}${p.company?' · 🏢 '+esc(p.company):''}</div></div>
+    ${p.id===S.me.id?`<span class="badge">${roleName(p.role)}</span>`:`<select style="width:auto" onchange="setRole('${p.id}',this.value)">${['pending','worker','client','owner','disabled'].map(r=>`<option value="${r}" ${r===p.role?'selected':''}>${roleName(r)}</option>`).join('')}</select>`}
+   </div></div>`).join('')}`);
+}
+async function setRole(id,role){
+  try{ chk(await sb.from('profiles').update({role}).eq('id',id)); toast(t('saved')); route(); }catch(e){ toast(errMsg(e)); route(); }
+}
+function copyLink(){
+  const u=location.origin+location.pathname;
+  (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toast(t('copied'))).catch(()=>prompt('Link',u));
+}
+
+/* ================= Profil ================= */
+function openProfile(){
+  const m=S.me;
+  modal(`<h3>${t('profile')}</h3><div class="muted small">${esc(m.email)} · ${roleName(m.role)}</div>
+   <label>${t('fullName')}</label><input id="pn" value="${esc(m.full_name)}">
+   <label>${t('phone')}</label><input id="pp" type="tel" value="${esc(m.phone||'')}">
+   <label>${t('language')}</label><select id="pl">${LANGS.map(l=>`<option value="${l}" ${l===LANG?'selected':''}>${LNAMES[l]}</option>`).join('')}</select>
+   <div class="mact"><button class="btn r" style="margin-right:auto" onclick="logout()">${t('logout')}</button><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" onclick="saveProfile()">${t('save')}</button></div>`);
+}
+async function saveProfile(){
+  const rec={full_name:val('pn'),phone:val('pp')||null,lang:val('pl')};
+  try{
+    chk(await sb.from('profiles').update(rec).eq('id',S.me.id));
+    Object.assign(S.me,rec); LANG=rec.lang; localStorage.setItem('mp_lang',LANG);
+    const p=person(S.me.id); if(p) Object.assign(p,rec);
+    closeModal(); toast(t('saved')); route();
+  }catch(e){ toast(errMsg(e)); }
+}
+
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && S.me && S.me.role==='worker'){ loadActive().then(drawTimer); } });
+if(typeof supabase==='undefined'){ document.getElementById('app').innerHTML='<div class="auth"><div class="card err">'+t('netErr')+'</div></div>'; } else boot();
+</script>
+</body>
+</html>
