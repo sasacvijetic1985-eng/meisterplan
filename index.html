@@ -6,8 +6,13 @@
 <meta name="theme-color" content="#1f4e9c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Meisterplan">
-<title>Meisterplan · Cvijetić</title>
+<meta name="apple-mobile-web-app-title" content="Cvijetic HMS">
+<meta name="application-name" content="Cvijetic HMS">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Cvijetic HMS</title>
 <style>
 :root{--blue:#1f4e9c;--blue2:#163a76;--green:#3a9d3a;--green2:#2e7d2e;--bg:#f3f5f9;--card:#fff;--ink:#1b2333;--muted:#667085;--line:#e3e7ee;--red:#c62828;--ice:#e7f1ff;--iceb:#7fb0f0;--amber:#b26a00}
 *{box-sizing:border-box}
@@ -15,7 +20,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-u
 button,input,select,textarea{font:inherit;color:inherit}
 header{position:sticky;top:0;z-index:20;background:var(--blue);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top))}
 .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.logo{width:34px;height:34px;border-radius:9px;background:#fff;color:var(--blue);display:grid;place-items:center;font-weight:800;font-size:17px;flex:none}
+.logo{width:34px;height:34px;border-radius:9px;background:#fff url(icons/icon-192.png) center/cover no-repeat;flex:none}
 .logo b{color:var(--green)}
 .bt{font-weight:700;font-size:16px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bs{font-size:11.5px;opacity:.8}
@@ -82,7 +87,10 @@ th{background:#f7f9fc;font-size:12px;color:var(--muted)}
 .mact{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap}
 #toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:#1b2333;color:#fff;padding:10px 16px;border-radius:10px;z-index:60;font-size:14px;max-width:90vw;display:none}
 .auth{max-width:420px;margin:7vh auto 0;padding:0 16px}
-.auth .logo{width:56px;height:56px;font-size:26px;border-radius:14px;margin:0 auto 10px;background:var(--blue);color:#fff}
+.auth .logo{width:88px;height:88px;border-radius:20px;margin:0 auto 10px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.tabs{display:flex;gap:6px;margin-bottom:6px}.tabs .chip{flex:1;text-align:center}
+.install{background:var(--green);color:#fff;border:0;border-radius:12px;padding:12px;width:100%;font-weight:700;font-size:15px;cursor:pointer;margin:10px 0}
+.pinbox{font-size:24px;letter-spacing:6px;text-align:center}
 .auth .logo b{color:#9be39b}
 .center{text-align:center}
 .link{background:none;border:0;color:var(--blue);cursor:pointer;padding:8px;text-decoration:underline}
@@ -235,6 +243,37 @@ const L = {
  hoursHint:['Stunden sehen nur Sie und der Inhaber.','Only you and the owner can see hours.','Sate vidiš samo ti i vlasnik.','Saatleri sadece siz ve sahip görür.','Sate vidiš samo ti i vlasnik.'],
  forgot:['Passwort vergessen?','Forgot password?','Zaboravljena lozinka?','Şifremi unuttum','Zaboravljena lozinka?'],
  resetSent:['E-Mail zum Zurücksetzen wurde gesendet.','Reset email sent.','Poslat je e-mail za promenu lozinke.','Sıfırlama e-postası gönderildi.','Poslan je e-mail za promjenu lozinke.'],
+ phone:['Telefonnummer','Phone number','Broj telefona','Telefon numarası','Broj telefona'],
+ pin:['PIN (6 Ziffern)','PIN (6 digits)','PIN (6 cifara)','PIN (6 rakam)','PIN (6 znamenki)'],
+ tabPhone:['📱 Mitarbeiter','📱 Worker','📱 Radnik','📱 Çalışan','📱 Radnik'],
+ tabEmail:['✉️ Kunde / Inhaber','✉️ Client / owner','✉️ Klijent / vlasnik','✉️ Müşteri / sahip','✉️ Klijent / vlasnik'],
+ wrongPin:['Telefonnummer oder PIN falsch.','Wrong phone number or PIN.','Pogrešan broj telefona ili PIN.','Telefon veya PIN yanlış.','Pogrešan broj telefona ili PIN.'],
+ pinForgot:['PIN vergessen? Bitte beim Chef melden – er schickt Ihnen eine neue PIN.','Forgot PIN? Ask your boss for a new one.','Zaboravio si PIN? Javi se šefu – poslaće ti novi.','PIN’i mi unuttunuz? Patronunuzdan yenisini isteyin.','Zaboravio si PIN? Javi se šefu – poslat će ti novi.'],
+ install:['📲 App installieren','📲 Install app','📲 Instaliraj aplikaciju','📲 Uygulamayı yükle','📲 Instaliraj aplikaciju'],
+ iosInstall:['iPhone: unten auf „Teilen“ (□↑) tippen → „Zum Home-Bildschirm“ → „Hinzufügen“.','iPhone: tap “Share” (□↑) → “Add to Home Screen” → “Add”.','iPhone: dole dodirni „Podeli“ (□↑) → „Dodaj na početni ekran“ → „Dodaj“.','iPhone: “Paylaş” (□↑) → “Ana Ekrana Ekle” → “Ekle”.','iPhone: dolje dodirni „Dijeli“ (□↑) → „Dodaj na početni zaslon“ → „Dodaj“.'],
+ newWorker:['+ Neuer Mitarbeiter','+ New worker','+ Novi radnik','+ Yeni çalışan','+ Novi radnik'],
+ newWorkerText:['Name und Handynummer eintragen – die App erstellt eine PIN. Danach per WhatsApp schicken.','Enter name and mobile number – the app creates a PIN. Then send it via WhatsApp.','Upiši ime i broj mobilnog – aplikacija pravi PIN. Zatim ga pošalji preko WhatsApp-a.','Ad ve cep numarası girin – uygulama PIN oluşturur. Sonra WhatsApp ile gönderin.','Upiši ime i broj mobitela – aplikacija stvara PIN. Zatim ga pošalji WhatsAppom.'],
+ accountCreated:['Konto erstellt','Account created','Nalog napravljen','Hesap oluşturuldu','Račun stvoren'],
+ sendWhatsapp:['💬 Per WhatsApp senden','💬 Send via WhatsApp','💬 Pošalji na WhatsApp','💬 WhatsApp ile gönder','💬 Pošalji na WhatsApp'],
+ newPin:['🔑 Neue PIN','🔑 New PIN','🔑 Novi PIN','🔑 Yeni PIN','🔑 Novi PIN'],
+ phoneExists:['Für diese Nummer gibt es schon ein Konto.','An account with this number already exists.','Za ovaj broj već postoji nalog.','Bu numara için hesap zaten var.','Za ovaj broj već postoji račun.'],
+ removeMember:['🗑 Entfernen','🗑 Remove','🗑 Ukloni','🗑 Kaldır','🗑 Ukloni'],
+ removeConfirm:['Zugang wirklich entfernen? Erfasste Stunden bleiben für die Abrechnung gespeichert.','Really remove access? Recorded hours stay saved for payroll.','Sigurno ukloniti pristup? Upisani sati ostaju sačuvani zbog obračuna.','Erişim kaldırılsın mı? Kayıtlı saatler bordro için saklanır.','Sigurno ukloniti pristup? Upisani sati ostaju spremljeni zbog obračuna.'],
+ deleteAccount:['Konto löschen','Delete account','Obriši nalog','Hesabı sil','Obriši račun'],
+ deleteAccountText:['Ihr Zugang und Ihre Kontaktdaten werden gelöscht, Sie werden abgemeldet. Bereits erfasste Arbeitszeiten bleiben für die Lohnabrechnung beim Arbeitgeber gespeichert (gesetzliche Pflicht).','Your access and contact data are deleted and you are signed out. Recorded working hours stay with the employer for payroll (legal requirement).','Tvoj pristup i kontakt podaci se brišu i bićeš odjavljen. Već upisani radni sati ostaju kod poslodavca zbog obračuna plate (zakonska obaveza).','Erişiminiz ve iletişim bilgileriniz silinir. Kayıtlı çalışma saatleri bordro için işverende kalır (yasal zorunluluk).','Tvoj pristup i kontakt podaci se brišu i bit ćeš odjavljen. Upisani radni sati ostaju kod poslodavca zbog obračuna plaće (zakonska obveza).'],
+ typeDelete:['Zur Bestätigung LÖSCHEN eintippen','Type DELETE to confirm','Upiši OBRIŠI za potvrdu','Onay için SİL yazın','Upiši OBRIŠI za potvrdu'],
+ deleteWord:['LÖSCHEN','DELETE','OBRIŠI','SİL','OBRIŠI'],
+ accountDeleted:['Ihr Konto wurde gelöscht.','Your account was deleted.','Tvoj nalog je obrisan.','Hesabınız silindi.','Tvoj račun je obrisan.'],
+ removedPeople:['Entfernte Zugänge','Removed accounts','Uklonjeni nalozi','Kaldırılan hesaplar','Uklonjeni računi'],
+ archive:['🗄 Nicht mehr unser Objekt','🗄 No longer ours','🗄 Više nije naš objekat','🗄 Artık bizim değil','🗄 Više nije naš objekt'],
+ reactivate:['↺ Wieder aktiv','↺ Reactivate','↺ Ponovo aktivan','↺ Tekrar aktif','↺ Ponovno aktivan'],
+ archived:['Archiviert – nicht mehr bei uns','Archived – no longer ours','Arhivirano – više nije naš','Arşivlendi','Arhivirano – više nije naš'],
+ f_active:['Aktive','Active','Aktivni','Aktif','Aktivni'],
+ f_archived:['🗄 Ehemalige','🗄 Former','🗄 Bivši','🗄 Eski','🗄 Bivši'],
+ description:['Was wir dort machen','What we do there','Šta tamo radimo','Orada ne yapıyoruz','Što tamo radimo'],
+ schedule:['Wann / Turnus','When / schedule','Kada / ritam','Ne zaman','Kada / ritam'],
+ lastInvoice:['Letzte Rechnung','Last invoice','Poslednja faktura','Son fatura','Zadnji račun'],
+ objCount:['Objekte','properties','objekata','bina','objekata'],
  newPw:['Neues Passwort festlegen','Set new password','Postavi novu lozinku','Yeni şifre belirle','Postavi novu lozinku'],
 };
 let LANG = localStorage.getItem('mp_lang') || (LANGS.includes((navigator.language||'de').slice(0,2)) ? navigator.language.slice(0,2) : 'de');
@@ -256,6 +295,18 @@ const ymNow = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMo
 const todayISO = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
 const monthRange = ym => { const [y,m]=ym.split('-').map(Number); return [new Date(y,m-1,1).toISOString(), new Date(y,m,1).toISOString()]; };
 const roleName = r => t('r_'+r);
+const APP_DOMAIN='hausmeister-cvijetic.de';
+const normPhone = p => { let d=String(p||'').replace(/\D/g,''); if(d.startsWith('00')) d=d.slice(2); else if(d.startsWith('0')) d='49'+d.slice(1); return d; };
+const phoneEmail = p => 'app-'+normPhone(p)+'@'+APP_DOMAIN;
+const isPhoneAcc = e => /^app-\d+@/.test(e||'');
+const newPinCode = () => String(Math.floor(100000+Math.random()*900000));
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredInstall=e; document.querySelectorAll('.install').forEach(b=>b.hidden=false); });
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
+function installBtn(){ if(isStandalone()) return ''; if(isIOS()) return `<div class="card small" style="background:#f2f8f2;border-color:#cfe6cf">📲 ${t('iosInstall')}</div>`; return `<button class="install" ${deferredInstall?'':'hidden'} onclick="doInstall()">${t('install')}</button>`; }
+async function doInstall(){ if(!deferredInstall) return; deferredInstall.prompt(); try{ await deferredInstall.userChoice; }catch(e){} deferredInstall=null; document.querySelectorAll('.install').forEach(b=>b.hidden=true); }
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 function chk(r){ if(r.error) throw r.error; return r.data; }
 function toast(msg, ms=2600){ const el=$('#toast'); el.textContent=msg; el.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>el.style.display='none', ms); }
 function errMsg(e){ console.error(e); const m=(e&&(e.message||e.error_description))||String(e); return /fetch|network/i.test(m)?t('netErr'):m; }
@@ -265,7 +316,7 @@ const val = id => { const el=document.getElementById(id); return el ? el.value.t
 
 /* ================= Zustand ================= */
 let sb = null;
-const S = { uid:undefined, me:null, view:null, param:null, active:null, people:[], objFilter:{q:'',mode:'all'}, taskFilter:'open', hoursYM:ymNow(), hoursWorker:'', authMode:'login', recovery:false };
+const S = { uid:undefined, me:null, view:null, param:null, active:null, people:[], objFilter:{q:'',mode:'active'}, taskFilter:'open', hoursYM:ymNow(), hoursWorker:'', authMode:'phone', recovery:false };
 
 function cfg(){
   let url=SUPABASE_URL, key=SUPABASE_KEY;
@@ -286,7 +337,7 @@ function boot(){
 }
 
 function renderSetup(){
-  $('#app').innerHTML = `<div class="auth"><div class="logo">M<b>P</b></div><h1 class="center">${t('setupTitle')}</h1>
+  $('#app').innerHTML = `<div class="auth"><div class="logo"></div><h1 class="center">${t('setupTitle')}</h1>
   <p class="muted center">${t('setupText')}</p>
   <label>Supabase Project URL</label><input id="su" placeholder="https://xxxx.supabase.co">
   <label>Supabase anon / publishable key</label><input id="sk" placeholder="eyJ… / sb_publishable_…">
@@ -305,28 +356,43 @@ function langPills(){
 function setLang(l){ LANG=l; localStorage.setItem('mp_lang',l); if(S.me){ sb.from('profiles').update({lang:l}).eq('id',S.me.id).then(()=>{}); S.me.lang=l; route(); } else renderAuth(); }
 
 function renderAuth(msg){
-  const reg = S.authMode==='register';
+  if(!S.authMode) S.authMode='phone';
+  const m=S.authMode, reg=m==='register', ph=m==='phone';
   $('#app').innerHTML = `<div class="auth">
-   <div class="logo">M<b>P</b></div>
-   <h1 class="center" style="margin-bottom:2px">Meisterplan</h1>
+   <div class="logo"></div>
+   <h1 class="center" style="margin-bottom:2px">Cvijetic HMS</h1>
    <div class="center muted">Cvijetic Hausmeisterservice</div>
    ${langPills()}
+   ${installBtn()}
+   <div class="tabs">${[['phone','tabPhone'],['login','tabEmail']].map(x=>`<button class="chip ${(m===x[0]||(reg&&x[0]==='login'))?'on':''}" onclick="S.authMode='${x[0]}';renderAuth()">${t(x[1])}</button>`).join('')}</div>
    <div class="card">
     <h3 style="margin:2px 0 4px">${reg?t('register'):t('login')}</h3>
-    ${reg?`<label>${t('fullName')} *</label><input id="af" autocomplete="name">
+    ${ph?`<label>${t('phone')} *</label><input id="aph" type="tel" autocomplete="tel" inputmode="tel" placeholder="0172 1234567">
+    <label>${t('pin')} *</label><input id="ap" class="pinbox" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6">`:
+    `${reg?`<label>${t('fullName')} *</label><input id="af" autocomplete="name">
     <label>${t('company')}</label><input id="ac" autocomplete="organization">`:''}
     <label>${t('email')} *</label><input id="ae" type="email" autocomplete="email" inputmode="email">
-    <label>${t('password')} *</label><input id="ap" type="password" autocomplete="${reg?'new-password':'current-password'}">
+    <label>${t('password')} *</label><input id="ap" type="password" autocomplete="${reg?'new-password':'current-password'}">`}
     <div id="aerr" class="err">${msg?esc(msg):''}</div>
     <button class="btn big" style="margin-top:14px" id="abtn" onclick="doAuth()">${reg?t('register'):t('login')}</button>
+    ${ph?`<div class="small muted center" style="margin-top:10px">${t('pinForgot')}</div>`:''}
    </div>
-   <div class="center"><button class="link" onclick="S.authMode='${reg?'login':'register'}';renderAuth()">${reg?t('haveAccount'):t('noAccount')}</button>
-   ${reg?'':`<br><button class="link" onclick="forgotPw()">${t('forgot')}</button>`}</div>
+   ${ph?'':`<div class="center"><button class="link" onclick="S.authMode='${reg?'login':'register'}';renderAuth()">${reg?t('haveAccount'):t('noAccount')}</button>
+   ${reg?'':`<br><button class="link" onclick="forgotPw()">${t('forgot')}</button>`}</div>`}
   </div>`;
   const pw=$('#ap'); if(pw) pw.addEventListener('keydown',e=>{ if(e.key==='Enter') doAuth(); });
 }
 async function doAuth(){
-  const reg=S.authMode==='register', email=val('ae'), password=$('#ap').value, err=$('#aerr'), b=$('#abtn');
+  const m=S.authMode, reg=m==='register', err=$('#aerr'), b=$('#abtn'), password=$('#ap').value;
+  if(m==='phone'){
+    const ph=normPhone(val('aph'));
+    if(ph.length<8||!/^\d{6}$/.test(password)){ err.textContent=t('required'); return; }
+    b.disabled=true; err.textContent='';
+    const r=await sb.auth.signInWithPassword({email:phoneEmail(ph),password});
+    if(r.error){ err.textContent=/invalid/i.test(r.error.message)?t('wrongPin'):errMsg(r.error); b.disabled=false; }
+    return;
+  }
+  const email=val('ae');
   if(!email||!password||(reg&&!val('af'))){ err.textContent=t('required'); return; }
   if(password.length<6){ err.textContent=t('pwShort'); return; }
   b.disabled=true; err.textContent='';
@@ -376,9 +442,9 @@ async function startApp(){
 }
 function renderPending(){
   const dis=S.me.role==='disabled';
-  $('#app').innerHTML=`<div class="auth"><div class="logo">M<b>P</b></div>${langPills()}<div class="card center">
+  $('#app').innerHTML=`<div class="auth"><div class="logo"></div>${langPills()}<div class="card center">
   <h3>${dis?t('r_disabled'):t('pendingTitle')}</h3><p class="muted">${dis?t('disabledText'):t('pendingText')}</p>
-  <p class="small muted">${esc(S.me.full_name)} · ${esc(S.me.email)}</p>
+  <p class="small muted">${esc(S.me.full_name)}</p>
   <div class="mact" style="justify-content:center"><button class="btn l" onclick="logout()">${t('logout')}</button><button class="btn" onclick="startApp()">${t('refresh')}</button></div></div></div>`;
 }
 async function logout(){ clearInterval(S.tick); await sb.auth.signOut(); }
@@ -392,9 +458,9 @@ function navItems(){
 }
 function go(view,param){ S.view=view; S.param=param||null; route(); window.scrollTo(0,0); }
 function shell(){
-  const first=(S.me.full_name||S.me.email||'').split(' ')[0];
+  const first=(S.me.full_name||'').split(' ')[0]||'Profil';
   const navView = S.view==='obj' ? 'objects' : S.view;
-  $('#app').innerHTML = `<header><div class="brand"><div class="logo">M<b>P</b></div><div style="min-width:0"><div class="bt">Meisterplan</div><div class="bs">Cvijetic Hausmeisterservice</div></div></div>
+  $('#app').innerHTML = `<header><div class="brand"><div class="logo"></div><div style="min-width:0"><div class="bt">Cvijetic HMS</div><div class="bs">Cvijetic Hausmeisterservice</div></div></div>
    <button class="hbtn" onclick="openProfile()">👤 ${esc(first)}</button></header>
    <div id="tbar"></div><main id="main"><div class="spin">…</div></main>
    <nav class="bottom"><div class="in">${navItems().map(n=>`<button class="nb ${navView===n[0]?'on':''}" onclick="go('${n[0]}')"><span>${n[1]}</span>${t(n[2])}</button>`).join('')}</div></nav>`;
@@ -482,23 +548,33 @@ async function vObjects(){
   S.objW={}; (chk(ow)||[]).forEach(x=>(S.objW[x.object_id]=S.objW[x.object_id]||[]).push(x.worker_id));
   main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${S.me.role==='owner'?t('nav_objects'):t('myObjects')}</h1>${S.me.role==='owner'?`<button class="btn g sm" onclick="objectForm()">${t('newObject')}</button>`:''}</div>
   <input id="oq" placeholder="${t('search')}" value="${esc(S.objFilter.q)}" oninput="S.objFilter.q=this.value;drawObjList()" style="margin-bottom:10px">
-  <div class="chips" id="ochips"><button class="chip" onclick="S.objFilter.mode='all';drawObjList()">${t('all')}</button><button class="chip" onclick="S.objFilter.mode='wd';drawObjList()">${t('wdOnly')}</button>${S.me.role==='owner'?`<button class="chip" onclick="S.objFilter.mode='free';drawObjList()">⚠ ${t('unassigned')}</button>`:''}</div>
+  <div class="chips" id="ochips">${(S.me.role==='owner'?[['active','f_active'],['wd','wdOnly'],['free','unassigned'],['arch','f_archived'],['all','all']]:[['active','all'],['wd','wdOnly']]).map(c=>`<button class="chip" data-m="${c[0]}" onclick="S.objFilter.mode='${c[0]}';drawObjList()">${c[0]==='free'?'⚠ ':''}${t(c[1])}</button>`).join('')}</div>
   <div id="olist"></div>`);
   drawObjList();
 }
 function drawObjList(){
-  const f=S.objFilter, q=f.q.toLowerCase(), mode=f.mode||'all';
-  document.querySelectorAll('#ochips .chip').forEach((c,i)=>c.classList.toggle('on', ['all','wd','free'][i]===mode));
-  const list=(S.objs||[]).filter(o=>(mode!=='wd'||o.winterdienst)&&(mode!=='free'||!(S.objW[o.id]||[]).length)&&(!q||[o.name,o.address,o.city,o.customer,(o.services||[]).join(' ')].join(' ').toLowerCase().includes(q)));
-  list.sort((a,b)=>(b.winterdienst-a.winterdienst)||(b.active-a.active)||a.name.localeCompare(b.name));
-  $('#olist').innerHTML = list.length ? list.map(o=>{
+  const f=S.objFilter, q=f.q.toLowerCase(), mode=f.mode||'active', owner=S.me.role==='owner';
+  document.querySelectorAll('#ochips .chip').forEach(c=>c.classList.toggle('on', c.dataset.m===mode));
+  const list=(S.objs||[]).filter(o=>{
+    if(mode==='active'&&!o.active) return false;
+    if(mode==='arch'&&o.active) return false;
+    if(mode==='wd'&&(!o.winterdienst||!o.active)) return false;
+    if(mode==='free'&&(!o.active||(S.objW[o.id]||[]).length)) return false;
+    return !q||[o.name,o.address,o.city,o.customer,o.description,o.schedule,(o.services||[]).join(' ')].join(' ').toLowerCase().includes(q);
+  });
+  list.sort((a,b)=>(b.active-a.active)||(b.winterdienst-a.winterdienst)||a.name.localeCompare(b.name,'de'));
+  $('#olist').innerHTML = (list.length?`<div class="small muted" style="margin:-4px 0 8px">${list.length} ${t('objCount')}</div>`:'') + (list.length ? list.map(o=>{
     const n=S.objCounts[o.id]||0, run=S.active&&S.active.object_id===o.id;
-    return `<div class="card obj click ${o.winterdienst?'wd':''}" style="${o.active?'':'opacity:.55'}" onclick="go('obj','${o.id}')">
-     <div class="ot">${esc(o.name)} ${o.winterdienst?`<span class="badge b-wd">❄ ${t('wd')}</span>`:''} ${o.active?'':`<span class="badge">${t('inactive')}</span>`} ${run?`<span class="badge b-done">⏱ ${t('runningNow')}</span>`:''}</div>
-     <div class="muted">${esc([o.address,o.city].filter(Boolean).join(', '))}</div>
-     ${(o.services||[]).length?`<div class="row" style="margin-top:6px;gap:4px">${o.services.map(x=>`<span class="badge">${esc(x)}</span>`).join('')}</div>`:''}
-     <div class="row small muted" style="margin-top:4px">${n?`<span class="badge b-open">${n} ${t('openTasks')}</span>`:''}${S.me.role==='owner'&&o.customer?`<span>🏢 ${esc(o.customer)}</span>`:''}${S.me.role==='owner'?`<span>👷 ${(S.objW[o.id]||[]).length?(S.objW[o.id]).map(pname).map(esc).join(', '):'<b style="color:var(--red)">–</b>'}</span>`:''}</div></div>`;
-  }).join('') : `<div class="empty">${t('noObjects')}</div>`;
+    return `<div class="card obj click ${o.winterdienst&&o.active?'wd':''}" style="${o.active?'':'opacity:.6'}" onclick="go('obj','${o.id}')">
+     <div class="ot">${esc(o.name)} ${o.winterdienst?`<span class="badge b-wd">❄ ${t('wd')}</span>`:''} ${o.active?'':`<span class="badge">🗄 ${t('inactive')}</span>`} ${run?`<span class="badge b-done">⏱ ${t('runningNow')}</span>`:''}</div>
+     <div class="muted">📍 ${esc([o.address,o.city].filter(Boolean).join(', '))}</div>
+     ${o.description?`<div class="small" style="margin-top:4px">🧹 ${esc(o.description)}</div>`:((o.services||[]).length?`<div class="row" style="margin-top:6px;gap:4px">${o.services.map(x=>`<span class="badge">${esc(x)}</span>`).join('')}</div>`:'')}
+     <div class="row small muted" style="margin-top:4px">${n?`<span class="badge b-open">${n} ${t('openTasks')}</span>`:''}${o.schedule?`<span>🗓 ${esc(o.schedule)}</span>`:''}${owner&&o.customer?`<span>🏢 ${esc(o.customer)}</span>`:''}${owner?`<span>👷 ${(S.objW[o.id]||[]).length?(S.objW[o.id]).map(pname).map(esc).join(', '):'<b style="color:var(--red)">–</b>'}</span>`:''}</div>
+     ${owner?`<div class="row" style="margin-top:8px" onclick="event.stopPropagation()">${o.active?`<button class="btn l sm" onclick="setObjActive('${o.id}',false)">${t('archive')}</button>`:`<button class="btn g sm" onclick="setObjActive('${o.id}',true)">${t('reactivate')}</button>`}<span class="grow"></span><button class="btn l sm" title="${t('delete')}" onclick="deleteObject('${o.id}')">🗑</button></div>`:''}</div>`;
+  }).join('') : `<div class="empty">${t('noObjects')}</div>`);
+}
+async function setObjActive(id,act){
+  try{ chk(await sb.from('objects').update({active:act}).eq('id',id)); const o=(S.objs||[]).find(x=>x.id===id); if(o) o.active=act; toast(act?t('saved'):t('archived')); if(S.view==='obj') route(); else drawObjList(); }catch(e){ toast(errMsg(e)); }
 }
 
 async function vObj(id){
@@ -527,9 +603,13 @@ async function vObj(id){
    <div class="row"><h1 class="grow" style="margin:0">${esc(obj.name)}</h1>${role==='owner'?`<button class="btn l sm" onclick="objectForm('${id}')">✏️ ${t('edit')}</button>`:''}</div>
    ${obj.winterdienst?`<div style="margin:6px 0"><span class="badge b-wd">❄ ${t('wd')}</span></div>`:''}
    ${addr?`<div class="muted">${esc(addr)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}" target="_blank" rel="noopener">${t('route')}</a></div>`:''}
+   ${obj.active?'':`<div style="margin:6px 0"><span class="badge">🗄 ${t('archived')}</span></div>`}
+   ${obj.description?`<div style="margin-top:10px"><b>🧹 ${t('description')}:</b> ${esc(obj.description)}</div>`:''}
+   ${obj.schedule?`<div style="margin-top:4px"><b>🗓 ${t('schedule')}:</b> ${esc(obj.schedule)}</div>`:''}
    ${(obj.services||[]).length?`<div style="margin-top:10px"><div class="small muted">${t('services')}</div><div class="row" style="gap:6px;margin-top:4px">${obj.services.map(x=>`<span class="badge" style="font-size:13px;padding:4px 10px">✓ ${esc(x)}</span>`).join('')}</div></div>`:''}
    ${obj.notes?`<div style="margin-top:8px;white-space:pre-wrap">${esc(obj.notes)}</div>`:''}
-   ${role==='owner'?`<div class="small muted" style="margin-top:8px">👷 ${wl.length?wl.map(pname).map(esc).join(', '):'–'}${obj.customer?` · 🏢 ${esc(obj.customer)}`:''}${obj.client_id?` · 👤 ${esc(pname(obj.client_id))}`:''}</div>`:''}
+   ${role==='owner'?`<div class="small muted" style="margin-top:8px">👷 ${wl.length?wl.map(pname).map(esc).join(', '):'–'}${obj.customer?` · 🏢 ${esc(obj.customer)}`:''}${obj.client_id?` · 👤 ${esc(pname(obj.client_id))}`:''}${obj.last_invoice?` · 🧾 ${t('lastInvoice')}: ${fmtD(obj.last_invoice)}`:''}</div>
+   <div class="row" style="margin-top:10px">${obj.active?`<button class="btn l sm" onclick="setObjActive('${id}',false)">${t('archive')}</button>`:`<button class="btn g sm" onclick="setObjActive('${id}',true)">${t('reactivate')}</button>`}<span class="grow"></span><button class="btn r sm" onclick="deleteObject('${id}')">🗑 ${t('delete')}</button></div>`:''}
   </div>
   ${timer}
   <h2>✅ ${t('nav_tasks')}<span class="sp"></span><button class="btn sm" onclick="taskForm('${id}')">${t('newTask')}</button></h2>
@@ -554,6 +634,8 @@ function objectForm(id){
     <label>${t('city')}</label><input id="fc" value="${esc(o.city)}" placeholder="74076 Heilbronn">
     <label>${t('client')}</label><select id="fcl"><option value="">${t('none')}</option>${clients().map(c=>`<option value="${c.id}" ${c.id===o.client_id?'selected':''}>${esc(c.company?c.company+' – ':'')}${esc(c.full_name||c.email)}</option>`).join('')}</select>
     <label>${t('customer')}</label><input id="fcu" value="${esc(o.customer||'')}" placeholder="z. B. co.plan immo-concept">
+    <label>${t('description')}</label><textarea id="fde" style="min-height:60px" placeholder="Treppenhausreinigung, Gartenpflege, Winterdienst …">${esc(o.description||'')}</textarea>
+    <label>${t('schedule')}</label><input id="fsc" value="${esc(o.schedule||'')}" placeholder="Freitag, alle 2 Wochen …">
     <label>${t('services')}</label><div class="chips" id="fsv" style="margin-bottom:4px">${svc.map(x=>`<label class="chip ${(o.services||[]).includes(x)?'on':''}" style="display:inline-flex;align-items:center;margin:0"><input type="checkbox" value="${esc(x)}" ${(o.services||[]).includes(x)?'checked':''} style="display:none" onchange="this.parentNode.classList.toggle('on',this.checked)">${esc(x)}</label>`).join('')}</div>
     <div class="row"><input id="fsvn" class="grow" placeholder="${t('addService')}" style="width:auto"><button class="btn l sm" type="button" onclick="addSvc()">+</button></div>
     <label class="chk"><input type="checkbox" id="fwd" ${o.winterdienst?'checked':''}>❄ ${t('wd')}</label>
@@ -566,7 +648,7 @@ function objectForm(id){
 }
 function addSvc(){ const v=val('fsvn'); if(!v) return; const l=document.createElement('label'); l.className='chip on'; l.style.cssText='display:inline-flex;align-items:center;margin:0'; l.innerHTML=`<input type="checkbox" value="${esc(v)}" checked style="display:none" onchange="this.parentNode.classList.toggle('on',this.checked)">${esc(v)}`; $('#fsv').appendChild(l); $('#fsvn').value=''; }
 async function saveObject(id){
-  const rec={name:val('fn'),address:val('fa')||null,city:val('fc')||null,client_id:val('fcl')||null,winterdienst:$('#fwd').checked,active:$('#fact').checked,notes:val('fno')||null,customer:val('fcu')||null,services:[...document.querySelectorAll('#fsv input:checked')].map(x=>x.value)};
+  const rec={name:val('fn'),address:val('fa')||null,city:val('fc')||null,client_id:val('fcl')||null,winterdienst:$('#fwd').checked,active:$('#fact').checked,notes:val('fno')||null,customer:val('fcu')||null,description:val('fde')||null,schedule:val('fsc')||null,services:[...document.querySelectorAll('#fsv input:checked')].map(x=>x.value)};
   if(!rec.name) return toast(t('required'));
   const sel=[...document.querySelectorAll('.fw:checked')].map(x=>x.value);
   $('#fsave').disabled=true;
@@ -581,7 +663,7 @@ async function saveObject(id){
 }
 async function deleteObject(id){
   if(!confirm(t('confirmDelete'))) return;
-  try{ chk(await sb.from('objects').delete().eq('id',id)); closeModal(); go('objects'); }catch(e){ toast(errMsg(e)); }
+  try{ chk(await sb.from('objects').delete().eq('id',id)); closeModal(); S.view==='objects'?vObjects():go('objects'); }catch(e){ toast(errMsg(e)); }
 }
 
 /* ================= Aufgaben ================= */
@@ -787,17 +869,72 @@ async function delMat(id){ if(!confirm(t('confirmDelete'))) return; try{ chk(awa
 
 /* ================= Team (Inhaber) ================= */
 async function vTeam(){
-  S.people = chk(await sb.from('profiles').select('id,full_name,role,company,email,phone').order('full_name'));
+  S.people = chk(await sb.from('profiles').select('id,full_name,role,company,email,phone,deleted_at').order('full_name'));
   const order={pending:0,owner:1,worker:2,client:3,disabled:4};
-  const list=S.people.slice().sort((a,b)=>order[a.role]-order[b.role]||(a.full_name||'').localeCompare(b.full_name||''));
+  const all=S.people.slice().sort((a,b)=>order[a.role]-order[b.role]||(a.full_name||'').localeCompare(b.full_name||''));
+  const list=all.filter(p=>!p.deleted_at), gone=all.filter(p=>p.deleted_at);
   const appUrl=location.origin+location.pathname;
-  main(`<h1>${t('nav_team')}</h1>
-  <div class="card" style="background:#f2f8f2;border-color:#cfe6cf"><div class="small">${t('inviteText')}</div><div class="row" style="margin-top:8px"><code class="grow small" style="word-break:break-all">${esc(appUrl)}</code><button class="btn g sm" onclick="copyLink()">${t('copyLink')}</button></div></div>
-  ${list.map(p=>`<div class="card" style="${p.role==='pending'?'border-color:var(--amber);background:#fff8ec':''}">
+  const card=p=>`<div class="card" style="${p.role==='pending'?'border-color:var(--amber);background:#fff8ec':''}">
    <div class="row"><div class="grow"><b>${esc(p.full_name||'–')}</b> ${p.id===S.me.id?`<span class="muted small">${t('you')}</span>`:''}
-    <div class="small muted">${esc(p.email||'')}${p.phone?' · '+esc(p.phone):''}${p.company?' · 🏢 '+esc(p.company):''}</div></div>
+    <div class="small muted">${isPhoneAcc(p.email)?'📱 '+esc(p.phone||''):esc(p.email||'')+(p.phone?' · '+esc(p.phone):'')}${p.company?' · 🏢 '+esc(p.company):''}</div></div>
     ${p.id===S.me.id?`<span class="badge">${roleName(p.role)}</span>`:`<select style="width:auto" onchange="setRole('${p.id}',this.value)">${['pending','worker','client','owner','disabled'].map(r=>`<option value="${r}" ${r===p.role?'selected':''}>${roleName(r)}</option>`).join('')}</select>`}
-   </div>${p.role==='worker'||p.role==='owner'?`<div style="margin-top:8px"><button class="btn l sm" onclick="assignForm('${p.id}')">${t('assignObjects')}</button></div>`:''}</div>`).join('')}`);
+   </div>
+   <div class="row" style="margin-top:8px">${p.role==='worker'||p.role==='owner'?`<button class="btn l sm" onclick="assignForm('${p.id}')">${t('assignObjects')}</button>`:''}
+    ${isPhoneAcc(p.email)&&p.id!==S.me.id?`<button class="btn l sm" onclick="resetPin('${p.id}')">${t('newPin')}</button>`:''}
+    <span class="grow"></span>${p.role!=='owner'&&p.id!==S.me.id?`<button class="btn l sm" onclick="removeMember('${p.id}')">${t('removeMember')}</button>`:''}</div></div>`;
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_team')}</h1><button class="btn g sm" onclick="newWorkerForm()">${t('newWorker')}</button></div>
+  <div class="card" style="background:#f2f8f2;border-color:#cfe6cf"><div class="small">${t('newWorkerText')}</div><div class="row" style="margin-top:8px"><code class="grow small" style="word-break:break-all">${esc(appUrl)}</code><button class="btn g sm" onclick="copyLink()">${t('copyLink')}</button></div></div>
+  ${list.map(card).join('')}
+  ${gone.length?`<div class="muted small" style="margin:16px 0 6px">${t('removedPeople')}: ${gone.map(p=>esc(p.full_name||'–')).join(', ')}</div>`:''}`);
+}
+function newWorkerForm(){
+  modal(`<h3>${t('newWorker').replace('+ ','')}</h3><div class="muted small">${t('newWorkerText')}</div>
+   <label>${t('fullName')} *</label><input id="nwn" autocomplete="off">
+   <label>${t('phone')} *</label><input id="nwp" type="tel" inputmode="tel" placeholder="0172 1234567">
+   <label>${t('language')}</label><select id="nwl">${LANGS.map(l=>`<option value="${l}" ${l==='sr'?'selected':''}>${LNAMES[l]}</option>`).join('')}</select>
+   <label>Rolle</label><select id="nwr"><option value="worker">${roleName('worker')}</option><option value="client">${roleName('client')}</option></select>
+   <div id="nwerr" class="err"></div>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn g" id="nwb" onclick="createWorker()">${t('save')}</button></div>`);
+}
+async function createWorker(){
+  const name=val('nwn'), phone=val('nwp'), ph=normPhone(phone), lang=$('#nwl').value, role=$('#nwr').value;
+  if(!name||ph.length<8){ $('#nwerr').textContent=t('required'); return; }
+  $('#nwb').disabled=true;
+  const pin=newPinCode();
+  try{
+    const c=cfg(); const tmp=supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'hms-tmp'}});
+    const r=await tmp.auth.signUp({email:phoneEmail(ph),password:pin,options:{data:{full_name:name,lang}}});
+    if(r.error) throw (/already|registered|exists/i.test(r.error.message)?new Error(t('phoneExists')):r.error);
+    const uid=r.data.user&&r.data.user.id; if(!uid) throw new Error('signup');
+    try{ await tmp.auth.signOut(); }catch(e){}
+    let ok=false; for(let i=0;i<5&&!ok;i++){ const u=await sb.from('profiles').update({role,phone,full_name:name,lang}).eq('id',uid).select('id'); ok=!u.error&&u.data&&u.data.length; if(!ok) await new Promise(r=>setTimeout(r,700)); }
+    closeModal(); showPin(name,phone,pin,lang,true); vTeam();
+  }catch(e){ $('#nwerr').textContent=errMsg(e); $('#nwb').disabled=false; }
+}
+function waText(name,pin,lang){
+  const url=location.origin+location.pathname;
+  const T={de:`Hallo ${name}, hier ist dein Zugang zur App Cvijetic HMS:\n${url}\nLink öffnen → „App installieren“ → mit Handynummer und PIN anmelden.\nPIN: ${pin}`,
+   en:`Hi ${name}, here is your access to the Cvijetic HMS app:\n${url}\nOpen the link → “Install app” → sign in with your phone number and PIN.\nPIN: ${pin}`,
+   sr:`Zdravo ${name}, ovo je tvoj pristup aplikaciji Cvijetic HMS:\n${url}\nOtvori link → „Instaliraj aplikaciju“ → prijavi se brojem telefona i PIN-om.\nPIN: ${pin}`,
+   hr:`Bok ${name}, ovo je tvoj pristup aplikaciji Cvijetic HMS:\n${url}\nOtvori poveznicu → „Instaliraj aplikaciju“ → prijavi se brojem telefona i PIN-om.\nPIN: ${pin}`,
+   tr:`Merhaba ${name}, Cvijetic HMS uygulamasına erişimin:\n${url}\nBağlantıyı aç → “Uygulamayı yükle” → telefon numaran ve PIN ile giriş yap.\nPIN: ${pin}`};
+  return T[lang]||T.de;
+}
+function showPin(name,phone,pin,lang,isNew){
+  const wa='https://wa.me/'+normPhone(phone)+'?text='+encodeURIComponent(waText(name,pin,lang));
+  modal(`<h3>${isNew?'✅ '+t('accountCreated'):t('newPin')}</h3><div><b>${esc(name)}</b> · 📱 ${esc(phone)}</div>
+   <div class="card center" style="margin-top:12px;font-size:30px;letter-spacing:8px;font-weight:800">${pin}</div>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('close')}</button><a class="btn g" href="${wa}" target="_blank" rel="noopener" style="text-decoration:none">${t('sendWhatsapp')}</a></div>`);
+}
+async function resetPin(id){
+  const p=person(id)||S.people.find(x=>x.id===id); if(!p) return;
+  if(!confirm(t('newPin')+' – '+(p.full_name||'')+'?')) return;
+  const pin=newPinCode();
+  try{ chk(await sb.rpc('owner_set_pin',{target:id,pin})); showPin(p.full_name||'',p.phone||'',pin,'sr',false); }catch(e){ toast(errMsg(e),5000); }
+}
+async function removeMember(id){
+  const p=S.people.find(x=>x.id===id); if(!confirm(t('removeConfirm')+'\n\n'+((p&&p.full_name)||''))) return;
+  try{ chk(await sb.rpc('delete_account',{target:id})); toast(t('saved')); vTeam(); }catch(e){ toast(errMsg(e),5000); }
 }
 async function assignForm(wid){
   const [objs,ow]=await Promise.all([sb.from('objects').select('id,name,address,city,customer,active').order('name'), sb.from('object_workers').select('object_id').eq('worker_id',wid)]);
@@ -829,11 +966,25 @@ function copyLink(){
 /* ================= Profil ================= */
 function openProfile(){
   const m=S.me;
-  modal(`<h3>${t('profile')}</h3><div class="muted small">${esc(m.email)} · ${roleName(m.role)}</div>
+  modal(`<h3>${t('profile')}</h3><div class="muted small">${isPhoneAcc(m.email)?'📱 '+esc(m.phone||''):esc(m.email)} · ${roleName(m.role)}</div>
    <label>${t('fullName')}</label><input id="pn" value="${esc(m.full_name)}">
    <label>${t('phone')}</label><input id="pp" type="tel" value="${esc(m.phone||'')}">
    <label>${t('language')}</label><select id="pl">${LANGS.map(l=>`<option value="${l}" ${l===LANG?'selected':''}>${LNAMES[l]}</option>`).join('')}</select>
-   <div class="mact"><button class="btn r" style="margin-right:auto" onclick="logout()">${t('logout')}</button><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" onclick="saveProfile()">${t('save')}</button></div>`);
+   ${installBtn()}
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" onclick="saveProfile()">${t('save')}</button></div>
+   <div class="mact" style="border-top:1px solid var(--line);padding-top:14px;justify-content:space-between"><button class="btn l" onclick="logout()">⎋ ${t('logout')}</button>${m.role==='owner'?'':`<button class="btn r sm" onclick="deleteAccountForm()">🗑 ${t('deleteAccount')}</button>`}</div>`);
+}
+function deleteAccountForm(){
+  modal(`<h3>⚠️ ${t('deleteAccount')}</h3><p class="muted">${t('deleteAccountText')}</p>
+   <label>${t('typeDelete')}</label><input id="dconf" autocomplete="off">
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn r" id="dbtn" onclick="doDeleteAccount()">${t('deleteAccount')}</button></div>`);
+}
+async function doDeleteAccount(){
+  const w=val('dconf').toUpperCase();
+  if(w!==t('deleteWord').toUpperCase()&&w!=='LÖSCHEN'&&w!=='DELETE'){ toast(t('typeDelete')); return; }
+  $('#dbtn').disabled=true;
+  try{ chk(await sb.rpc('delete_account',{})); closeModal(); clearInterval(S.tick); try{ await sb.auth.signOut({scope:'local'}); }catch(e){} S.uid=null; S.me=null; renderAuth(t('accountDeleted')); }
+  catch(e){ $('#dbtn').disabled=false; toast(errMsg(e),5000); }
 }
 async function saveProfile(){
   const rec={full_name:val('pn'),phone:val('pp')||null,lang:val('pl')};
