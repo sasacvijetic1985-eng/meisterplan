@@ -270,10 +270,32 @@ const L = {
  archived:['Archiviert – nicht mehr bei uns','Archived – no longer ours','Arhivirano – više nije naš','Arşivlendi','Arhivirano – više nije naš'],
  f_active:['Aktive','Active','Aktivni','Aktif','Aktivni'],
  f_archived:['🗄 Ehemalige','🗄 Former','🗄 Bivši','🗄 Eski','🗄 Bivši'],
- description:['Was wir dort machen','What we do there','Šta tamo radimo','Orada ne yapıyoruz','Što tamo radimo'],
+ objDescription:['Was wir dort machen','What we do there','Šta tamo radimo','Orada ne yapıyoruz','Što tamo radimo'],
  schedule:['Wann / Turnus','When / schedule','Kada / ritam','Ne zaman','Kada / ritam'],
  lastInvoice:['Letzte Rechnung','Last invoice','Poslednja faktura','Son fatura','Zadnji račun'],
  objCount:['Objekte','properties','objekata','bina','objekata'],
+ notifOn:['🔔 Benachrichtigungen einschalten','🔔 Turn on notifications','🔔 Uključi obaveštenja','🔔 Bildirimleri aç','🔔 Uključi obavijesti'],
+ notifText:['Damit Sie neue Aufgaben sofort auf dem Handy sehen.','So you see new tasks on your phone right away.','Da odmah vidiš nove zadatke na telefonu.','Yeni görevleri hemen telefonunuzda görmek için.','Da odmah vidiš nove zadatke na mobitelu.'],
+ notifDone:['Benachrichtigungen sind eingeschaltet ✓','Notifications are on ✓','Obaveštenja su uključena ✓','Bildirimler açık ✓','Obavijesti su uključene ✓'],
+ notifDenied:['Benachrichtigungen sind im Browser blockiert – bitte in den Handy-Einstellungen für diese App erlauben.','Notifications are blocked – please allow them in your phone settings for this app.','Obaveštenja su blokirana – dozvoli ih u podešavanjima telefona za ovu aplikaciju.','Bildirimler engellendi – telefon ayarlarından izin verin.','Obavijesti su blokirane – dopusti ih u postavkama mobitela.'],
+ notifIos:['iPhone: Benachrichtigungen gehen nur, wenn die App über „Zum Home-Bildschirm“ installiert ist.','iPhone: notifications only work when the app is installed via “Add to Home Screen”.','iPhone: obaveštenja rade samo kad je aplikacija instalirana preko „Dodaj na početni ekran“.','iPhone: bildirimler yalnızca uygulama ana ekrana eklenince çalışır.','iPhone: obavijesti rade samo kad je aplikacija dodana na početni zaslon.'],
+ contactTitle:['Kontakt – Cvijetic Hausmeisterservice','Contact – Cvijetic Hausmeisterservice','Kontakt – Cvijetic Hausmeisterservice','İletişim – Cvijetic Hausmeisterservice','Kontakt – Cvijetic Hausmeisterservice'],
+ officeHours:['Bürozeiten: Mo–Fr 07:00–17:00, Sa 07:00–14:00 · Notdienst unter derselben Nummer','Office hours: Mon–Fri 07:00–17:00, Sat 07:00–14:00 · Emergency on the same number','Radno vreme: Pon–Pet 07–17, Sub 07–14 · Hitno na isti broj','Çalışma saatleri: Pzt–Cum 07–17, Cmt 07–14','Radno vrijeme: Pon–Pet 07–17, Sub 07–14'],
+ call:['📞 Anrufen','📞 Call','📞 Pozovi','📞 Ara','📞 Nazovi'],
+ newClient:['+ Neuer Kunde','+ New client','+ Novi klijent','+ Yeni müşteri','+ Novi klijent'],
+ newClientText:['Für Hausverwaltungen und Eigentümer: Sie sehen nur ihre Objekte, erledigte Aufgaben mit Fotos und können Aufgaben melden.','For property managers and owners: they only see their properties, completed tasks with photos, and can report tasks.','Za upravnike zgrada i vlasnike: vide samo svoje objekte, završene zadatke sa slikama i mogu da prijave zadatak.','Yönetim şirketleri ve mal sahipleri için: sadece kendi binalarını ve tamamlanan görevleri görürler.','Za upravitelje i vlasnike: vide samo svoje objekte, završene zadatke sa slikama i mogu prijaviti zadatak.'],
+ clientObjects:['🏢 Objekte des Kunden','🏢 Client properties','🏢 Objekti klijenta','🏢 Müşteri binaları','🏢 Objekti klijenta'],
+ emailOrPhone:['E-Mail oder Handynummer angeben.','Enter email or mobile number.','Upiši e-mail ili broj mobilnog.','E-posta veya cep numarası girin.','Upiši e-mail ili broj mobitela.'],
+ accessData:['Zugangsdaten','Access data','Pristupni podaci','Erişim bilgileri','Pristupni podaci'],
+ sendEmail:['✉️ Per E-Mail senden','✉️ Send by email','✉️ Pošalji e-mailom','✉️ E-posta ile gönder','✉️ Pošalji e-mailom'],
+ myTasks:['Meine Aufgaben','My tasks','Moji zadaci','Görevlerim','Moji zadaci'],
+ newPlace:['➕ Neue Adresse (Auftrag nach Absprache)','➕ New address (one-off job)','➕ Nova adresa (posao po dogovoru)','➕ Yeni adres (tek seferlik iş)','➕ Nova adresa (posao po dogovoru)'],
+ oneOff:['📌 Nach Absprache','📌 One-off','📌 Po dogovoru','📌 Tek seferlik','📌 Po dogovoru'],
+ today:['Heute','Today','Danas','Bugün','Danas'],
+ todayTasks:['📅 Heute zu erledigen','📅 To do today','📅 Danas za uraditi','📅 Bugün yapılacak','📅 Danas za napraviti'],
+ weatherTitle:['❄ Wetter Winterdienst (24 h)','❄ Winter service weather (24 h)','❄ Vreme za zimsku službu (24h)','❄ Kış hizmeti hava (24 sa)','❄ Vrijeme za zimsku službu (24h)'],
+ noSnow:['kein Schnee','no snow','nema snega','kar yok','nema snijega'],
+ snowNow:['schneit jetzt!','snowing now!','pada sneg!','kar yağıyor!','pada snijeg!'],
  newPw:['Neues Passwort festlegen','Set new password','Postavi novu lozinku','Yeni şifre belirle','Postavi novu lozinku'],
 };
 let LANG = localStorage.getItem('mp_lang') || (LANGS.includes((navigator.language||'de').slice(0,2)) ? navigator.language.slice(0,2) : 'de');
@@ -296,6 +318,40 @@ const todayISO = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.ge
 const monthRange = ym => { const [y,m]=ym.split('-').map(Number); return [new Date(y,m-1,1).toISOString(), new Date(y,m,1).toISOString()]; };
 const roleName = r => t('r_'+r);
 const APP_DOMAIN='hausmeister-cvijetic.de';
+const FIRM={name:'Cvijetic Hausmeisterservice',phone:'+49 172 7061767',email:'info@hausmeister-cvijetic.de',web:'https://hausmeister-cvijetic.de',addr:'Villmatstraße 39, 74076 Heilbronn'};
+function contactCard(){
+  const wa='https://wa.me/'+normPhone(FIRM.phone);
+  return `<div class="card" style="border-color:#cfe6cf;background:#f6fbf6"><b>📇 ${t('contactTitle')}</b>
+   <div class="small muted" style="margin-top:4px">${esc(FIRM.addr)}<br>${t('officeHours')}</div>
+   <div class="row" style="margin-top:8px"><a class="btn sm" href="tel:${FIRM.phone.replace(/\s/g,'')}" style="text-decoration:none">${t('call')}</a><a class="btn g sm" href="${wa}" target="_blank" rel="noopener" style="text-decoration:none">💬 WhatsApp</a><a class="btn l sm" href="mailto:${FIRM.email}" style="text-decoration:none">✉️ ${esc(FIRM.email)}</a></div></div>`;
+}
+const pushSupported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+const b64ToU8 = b => { const p='='.repeat((4-b.length%4)%4); const r=atob((b+p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from([...r].map(c=>c.charCodeAt(0))); };
+async function pushState(){
+  if(!pushSupported()) return isIOS()&&!isStandalone()?'ios':'none';
+  if(Notification.permission==='denied') return 'denied';
+  try{ const reg=await navigator.serviceWorker.ready; const sub=await reg.pushManager.getSubscription(); return sub&&Notification.permission==='granted'?'on':'off'; }catch(e){ return 'off'; }
+}
+async function enablePush(){
+  try{
+    const perm=await Notification.requestPermission(); if(perm!=='granted'){ toast(t('notifDenied'),5000); return route(); }
+    const cfgRow=chk(await sb.from('app_config').select('value').eq('key','vapid_public').single());
+    const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToU8(cfgRow.value)});
+    const j=sub.toJSON();
+    chk(await sb.from('push_subscriptions').upsert({endpoint:j.endpoint,user_id:S.me.id,p256dh:j.keys.p256dh,auth:j.keys.auth},{onConflict:'endpoint'}));
+    toast(t('notifDone')); route();
+  }catch(e){ toast(errMsg(e),5000); }
+}
+async function pushBanner(){
+  const st=await pushState();
+  if(st==='on'){ try{ const reg=await navigator.serviceWorker.ready; const sub=await reg.pushManager.getSubscription(); const j=sub.toJSON(); sb.from('push_subscriptions').upsert({endpoint:j.endpoint,user_id:S.me.id,p256dh:j.keys.p256dh,auth:j.keys.auth},{onConflict:'endpoint'}).then(()=>{}); }catch(e){} return ''; }
+  if(st==='ios') return `<div class="card small" style="background:#fff8ec;border-color:var(--amber)">🔔 ${t('notifIos')}</div>`;
+  if(st==='denied') return `<div class="card small" style="background:#fff8ec;border-color:var(--amber)">🔔 ${t('notifDenied')}</div>`;
+  if(st==='none') return '';
+  return `<div class="card" style="background:#eef4ff;border-color:#bcd0f3"><div class="small">${t('notifText')}</div><button class="btn big" style="margin-top:8px;padding:12px;font-size:16px" onclick="enablePush()">${t('notifOn')}</button></div>`;
+}
 const normPhone = p => { let d=String(p||'').replace(/\D/g,''); if(d.startsWith('00')) d=d.slice(2); else if(d.startsWith('0')) d='49'+d.slice(1); return d; };
 const phoneEmail = p => 'app-'+normPhone(p)+'@'+APP_DOMAIN;
 const isPhoneAcc = e => /^app-\d+@/.test(e||'');
@@ -435,6 +491,7 @@ async function startApp(){
     S.people = chk(await sb.from('profiles').select('id,full_name,role,company,email,phone').order('full_name'));
     if(me.role==='worker') await loadActive();
     S.view = me.role==='owner' ? 'dash' : 'objects'; S.param=null;
+    try{ const qo=new URLSearchParams(location.search).get('obj'); if(qo){ S.view='obj'; S.param=qo; history.replaceState(null,'',location.pathname); } }catch(e){}
     route();
   }catch(e){
     $('#app').innerHTML=`<div class="auth"><div class="card"><div class="err">${esc(errMsg(e))}</div><div class="mact"><button class="btn l" onclick="logout()">${t('logout')}</button><button class="btn" onclick="startApp()">${t('refresh')}</button></div></div></div>`;
@@ -453,7 +510,7 @@ async function logout(){ clearInterval(S.tick); await sb.auth.signOut(); }
 function navItems(){
   const r=S.me.role;
   if(r==='owner') return [['dash','🏠','nav_dash'],['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat'],['team','👥','nav_team']];
-  if(r==='worker') return [['objects','🏢','nav_objects'],['hours','⏱','nav_hours'],['mat','📦','nav_mat']];
+  if(r==='worker') return [['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat']];
   return [['objects','🏢','nav_objects'],['tasks','✅','nav_tasks']];
 }
 function go(view,param){ S.view=view; S.param=param||null; route(); window.scrollTo(0,0); }
@@ -527,7 +584,9 @@ async function vDash(){
   [act,ot,mr,pend,hrs,wdc].forEach(chk);
   const ms=(hrs.data||[]).reduce((s,e)=>s+((e.ended_at?new Date(e.ended_at):new Date())-new Date(e.started_at)),0);
   const a=act.data||[];
-  main(`<h1>${t('nav_dash')}</h1>
+  const banner=await pushBanner(); await loadWeather();
+  const td=(chk(await sb.from('tasks').select('*, objects(name)').neq('status','done').lte('due_date',todayISO()).order('due_date'))||[]).map(x=>({...x,_objName:x.objects?.name}));
+  main(`${banner}<h1>${t('nav_dash')}</h1>${weatherCard()}
   ${pend.count?`<div class="card click" style="border-color:var(--amber);background:#fff8ec" onclick="go('team')">⚠️ <b>${pend.count}</b> · ${t('pendingUsers')} ›</div>`:''}
   <div class="stats">
    <div class="stat" onclick="go('tasks')"><div class="n">${ot.count||0}</div><div class="muted">${t('openTasks')}</div></div>
@@ -535,6 +594,8 @@ async function vDash(){
    <div class="stat g" onclick="go('hours')"><div class="n">${fmtDur(ms)}</div><div class="muted">${t('hoursMonth')}</div></div>
    <div class="stat" onclick="S.objFilter.mode='wd';go('objects')"><div class="n">❄ ${wdc.count||0}</div><div class="muted">${t('wd')}</div></div>
   </div>
+  <h2>${t('todayTasks')}<span class="sp"></span><button class="btn g sm" onclick="taskForm()">${t('newTask')}</button></h2>
+  ${td.length?td.map(taskCard).join(''):`<div class="empty">${t('noTasks')}</div>`}
   <h2>🟢 ${t('activeNow')}</h2>
   ${a.length? a.map(e=>`<div class="card click row" onclick="go('obj','${e.object_id}')"><div class="grow"><b>${esc(pname(e.worker_id))}</b><div class="muted">${esc(e.objects?.name||'')} ${e.objects?.winterdienst?'<span class="badge b-wd">❄</span>':''}</div></div><div class="badge b-done">${fmtT(e.started_at)} · ${fmtDur(Date.now()-new Date(e.started_at))}</div></div>`).join('') : `<div class="empty">${t('nobody')}</div>`}`);
 }
@@ -546,27 +607,40 @@ async function vObjects(){
   const [objs,tk,ow]=await Promise.all([q, sb.from('tasks').select('object_id').neq('status','done'), S.me.role==='owner'?sb.from('object_workers').select('object_id,worker_id'):Promise.resolve({data:[]})]);
   S.objs=chk(objs); const counts={}; (chk(tk)||[]).forEach(x=>counts[x.object_id]=(counts[x.object_id]||0)+1); S.objCounts=counts;
   S.objW={}; (chk(ow)||[]).forEach(x=>(S.objW[x.object_id]=S.objW[x.object_id]||[]).push(x.worker_id));
-  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${S.me.role==='owner'?t('nav_objects'):t('myObjects')}</h1>${S.me.role==='owner'?`<button class="btn g sm" onclick="objectForm()">${t('newObject')}</button>`:''}</div>
+  const banner=await pushBanner(); await loadWeather();
+  main(`${banner}${S.me.role==='client'?contactCard():''}<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${S.me.role==='owner'?t('nav_objects'):t('myObjects')}</h1>${S.me.role==='owner'?`<button class="btn g sm" onclick="objectForm()">${t('newObject')}</button>`:''}</div>
   <input id="oq" placeholder="${t('search')}" value="${esc(S.objFilter.q)}" oninput="S.objFilter.q=this.value;drawObjList()" style="margin-bottom:10px">
-  <div class="chips" id="ochips">${(S.me.role==='owner'?[['active','f_active'],['wd','wdOnly'],['free','unassigned'],['arch','f_archived'],['all','all']]:[['active','all'],['wd','wdOnly']]).map(c=>`<button class="chip" data-m="${c[0]}" onclick="S.objFilter.mode='${c[0]}';drawObjList()">${c[0]==='free'?'⚠ ':''}${t(c[1])}</button>`).join('')}</div>
-  <div id="olist"></div>`);
+  <div class="chips" id="ochips">${(S.me.role==='owner'?[['active','f_active'],['wd','wdOnly'],['oneoff','oneOff'],['free','unassigned'],['arch','f_archived'],['all','all']]:[['active','all'],['wd','wdOnly']]).map(c=>`<button class="chip" data-m="${c[0]}" onclick="S.objFilter.mode='${c[0]}';drawObjList()">${c[0]==='free'?'⚠ ':''}${t(c[1])}</button>`).join('')}</div>
+  <div id="wcard"></div><div id="olist"></div>`);
   drawObjList();
+}
+const townOf = c => String(c||'Heilbronn').replace(/^\d{5}\s*/,'').split(/[-–(]/)[0].trim()||'Heilbronn';
+function snowBadge(o){ const w=(S.weather||{})[townOf(o.city)]; if(!w) return ''; if(w.snow_now>0) return `<span class="badge b-red">❄ ${t('snowNow')}</span>`; if(w.snow_24h>0) return `<span class="badge b-red">❄ ${w.snow_24h} cm</span>`; return ''; }
+async function loadWeather(){ try{ const r=await sb.from('weather').select('*'); S.weather={}; (r.data||[]).forEach(w=>S.weather[w.town]=w); }catch(e){ S.weather={}; } }
+function weatherCard(){
+  const ws=Object.values(S.weather||{}); if(!ws.length) return '';
+  ws.sort((a,b)=>(b.snow_24h-a.snow_24h)||a.town.localeCompare(b.town));
+  const when=ws[0].checked_at?fmtDT(ws[0].checked_at):'';
+  return `<div class="card" style="background:#eef6ff;border-color:#bcd0f3"><b>${t('weatherTitle')}</b> <span class="small muted">${when}</span>
+   <div class="row" style="margin-top:6px;gap:6px">${ws.map(w=>`<span class="badge ${w.snow_now>0||w.snow_24h>0?'b-red':''}">${esc(w.town)}: ${w.snow_now>0?t('snowNow'):(w.snow_24h>0?w.snow_24h+' cm':t('noSnow'))} · ${Math.round(w.tmin_24h)}°</span>`).join('')}</div></div>`;
 }
 function drawObjList(){
   const f=S.objFilter, q=f.q.toLowerCase(), mode=f.mode||'active', owner=S.me.role==='owner';
   document.querySelectorAll('#ochips .chip').forEach(c=>c.classList.toggle('on', c.dataset.m===mode));
+  const wc=document.getElementById('wcard'); if(wc) wc.innerHTML=mode==='wd'?weatherCard():'';
   const list=(S.objs||[]).filter(o=>{
     if(mode==='active'&&!o.active) return false;
     if(mode==='arch'&&o.active) return false;
     if(mode==='wd'&&(!o.winterdienst||!o.active)) return false;
     if(mode==='free'&&(!o.active||(S.objW[o.id]||[]).length)) return false;
+    if(mode==='oneoff'&&(!o.one_off||!o.active)) return false;
     return !q||[o.name,o.address,o.city,o.customer,o.description,o.schedule,(o.services||[]).join(' ')].join(' ').toLowerCase().includes(q);
   });
   list.sort((a,b)=>(b.active-a.active)||(b.winterdienst-a.winterdienst)||a.name.localeCompare(b.name,'de'));
   $('#olist').innerHTML = (list.length?`<div class="small muted" style="margin:-4px 0 8px">${list.length} ${t('objCount')}</div>`:'') + (list.length ? list.map(o=>{
     const n=S.objCounts[o.id]||0, run=S.active&&S.active.object_id===o.id;
     return `<div class="card obj click ${o.winterdienst&&o.active?'wd':''}" style="${o.active?'':'opacity:.6'}" onclick="go('obj','${o.id}')">
-     <div class="ot">${esc(o.name)} ${o.winterdienst?`<span class="badge b-wd">❄ ${t('wd')}</span>`:''} ${o.active?'':`<span class="badge">🗄 ${t('inactive')}</span>`} ${run?`<span class="badge b-done">⏱ ${t('runningNow')}</span>`:''}</div>
+     <div class="ot">${esc(o.name)} ${o.winterdienst?`<span class="badge b-wd">❄ ${t('wd')}</span>`:''} ${o.active?'':`<span class="badge">🗄 ${t('inactive')}</span>`} ${o.one_off?`<span class="badge b-open">${t('oneOff')}</span>`:''} ${o.winterdienst&&o.active?snowBadge(o):''} ${run?`<span class="badge b-done">⏱ ${t('runningNow')}</span>`:''}</div>
      <div class="muted">📍 ${esc([o.address,o.city].filter(Boolean).join(', '))}</div>
      ${o.description?`<div class="small" style="margin-top:4px">🧹 ${esc(o.description)}</div>`:((o.services||[]).length?`<div class="row" style="margin-top:6px;gap:4px">${o.services.map(x=>`<span class="badge">${esc(x)}</span>`).join('')}</div>`:'')}
      <div class="row small muted" style="margin-top:4px">${n?`<span class="badge b-open">${n} ${t('openTasks')}</span>`:''}${o.schedule?`<span>🗓 ${esc(o.schedule)}</span>`:''}${owner&&o.customer?`<span>🏢 ${esc(o.customer)}</span>`:''}${owner?`<span>👷 ${(S.objW[o.id]||[]).length?(S.objW[o.id]).map(pname).map(esc).join(', '):'<b style="color:var(--red)">–</b>'}</span>`:''}</div>
@@ -604,7 +678,7 @@ async function vObj(id){
    ${obj.winterdienst?`<div style="margin:6px 0"><span class="badge b-wd">❄ ${t('wd')}</span></div>`:''}
    ${addr?`<div class="muted">${esc(addr)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}" target="_blank" rel="noopener">${t('route')}</a></div>`:''}
    ${obj.active?'':`<div style="margin:6px 0"><span class="badge">🗄 ${t('archived')}</span></div>`}
-   ${obj.description?`<div style="margin-top:10px"><b>🧹 ${t('description')}:</b> ${esc(obj.description)}</div>`:''}
+   ${obj.description?`<div style="margin-top:10px"><b>🧹 ${t('objDescription')}:</b> ${esc(obj.description)}</div>`:''}
    ${obj.schedule?`<div style="margin-top:4px"><b>🗓 ${t('schedule')}:</b> ${esc(obj.schedule)}</div>`:''}
    ${(obj.services||[]).length?`<div style="margin-top:10px"><div class="small muted">${t('services')}</div><div class="row" style="gap:6px;margin-top:4px">${obj.services.map(x=>`<span class="badge" style="font-size:13px;padding:4px 10px">✓ ${esc(x)}</span>`).join('')}</div></div>`:''}
    ${obj.notes?`<div style="margin-top:8px;white-space:pre-wrap">${esc(obj.notes)}</div>`:''}
@@ -634,7 +708,7 @@ function objectForm(id){
     <label>${t('city')}</label><input id="fc" value="${esc(o.city)}" placeholder="74076 Heilbronn">
     <label>${t('client')}</label><select id="fcl"><option value="">${t('none')}</option>${clients().map(c=>`<option value="${c.id}" ${c.id===o.client_id?'selected':''}>${esc(c.company?c.company+' – ':'')}${esc(c.full_name||c.email)}</option>`).join('')}</select>
     <label>${t('customer')}</label><input id="fcu" value="${esc(o.customer||'')}" placeholder="z. B. co.plan immo-concept">
-    <label>${t('description')}</label><textarea id="fde" style="min-height:60px" placeholder="Treppenhausreinigung, Gartenpflege, Winterdienst …">${esc(o.description||'')}</textarea>
+    <label>${t('objDescription')}</label><textarea id="fde" style="min-height:60px" placeholder="Treppenhausreinigung, Gartenpflege, Winterdienst …">${esc(o.description||'')}</textarea>
     <label>${t('schedule')}</label><input id="fsc" value="${esc(o.schedule||'')}" placeholder="Freitag, alle 2 Wochen …">
     <label>${t('services')}</label><div class="chips" id="fsv" style="margin-bottom:4px">${svc.map(x=>`<label class="chip ${(o.services||[]).includes(x)?'on':''}" style="display:inline-flex;align-items:center;margin:0"><input type="checkbox" value="${esc(x)}" ${(o.services||[]).includes(x)?'checked':''} style="display:none" onchange="this.parentNode.classList.toggle('on',this.checked)">${esc(x)}</label>`).join('')}</div>
     <div class="row"><input id="fsvn" class="grow" placeholder="${t('addService')}" style="width:auto"><button class="btn l sm" type="button" onclick="addSvc()">+</button></div>
@@ -695,8 +769,10 @@ async function taskForm(oid, tid){
   if(tid){ x = chk(await sb.from('tasks').select('*').eq('id',tid).single()); }
   let objs=[];
   if(!oid){ objs=chk(await sb.from('objects').select('id,name').eq('active',true).order('name')); }
+  if(!tid&&!x.due_date) x.due_date=todayISO();
   modal(`<h3>${tid?t('edit'):t('newTask').replace('+ ','')}</h3>
-   ${oid?`<div class="muted">🏢 ${esc((S.curObj&&S.curObj.id===oid)?S.curObj.name:'')}</div><input type="hidden" id="tob" value="${oid}">`:`<label>${t('object')} *</label><select id="tob"><option value="">${t('chooseObject')}</option>${objs.map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>`}
+   ${oid?`<div class="muted">🏢 ${esc((S.curObj&&S.curObj.id===oid)?S.curObj.name:'')}</div><input type="hidden" id="tob" value="${oid}">`:`<label>${t('object')} *</label><select id="tob" onchange="document.getElementById('tnew').hidden=this.value!=='__new'"><option value="">${t('chooseObject')}</option>${role==='owner'?`<option value="__new">${t('newPlace')}</option>`:''}${objs.map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>
+   <div id="tnew" hidden class="card" style="margin-top:8px;background:#f7f9fc"><label style="margin-top:0">${t('address')} *</label><input id="tna" placeholder="Musterstraße 1"><label>${t('city')}</label><input id="tnc" placeholder="74076 Heilbronn"><label>${t('customer')}</label><input id="tnk" placeholder="Name / Firma"></div>`}
    <label>${t('title')} *</label><input id="tti" value="${esc(x.title)}">
    <label>${t('description')}</label><textarea id="tde">${esc(x.description)}</textarea>
    ${role==='owner'?`<label>${t('assignedTo')}</label><select id="tas"><option value="">${t('none')}</option>${workers().map(w=>`<option value="${w.id}" ${w.id===x.assigned_to?'selected':''}>${esc(w.full_name||w.email)}</option>`).join('')}</select>`:''}
@@ -706,22 +782,29 @@ async function taskForm(oid, tid){
 async function saveTask(tid){
   const rec={object_id:val('tob'),title:val('tti'),description:val('tde')||null,due_date:val('tdu')||null};
   if(!rec.object_id||!rec.title) return toast(t('required'));
+  if(rec.object_id==='__new'){
+    const a=val('tna'); if(!a) return toast(t('required'));
+    try{ rec.object_id=chk(await sb.from('objects').insert({name:a,address:a,city:val('tnc')||null,customer:val('tnk')||null,one_off:true,active:true,services:[],description:rec.title}).select('id').single()).id; }catch(e){ return toast(errMsg(e)); }
+  }
   if(S.me.role==='owner') rec.assigned_to=val('tas')||null;
   else if(S.me.role==='worker' && !tid) rec.assigned_to=S.me.id;
   $('#tsave').disabled=true;
   try{
     if(tid) chk(await sb.from('tasks').update(rec).eq('id',tid));
     else chk(await sb.from('tasks').insert({...rec,created_by:S.me.id}));
+    if(S.me.role==='owner'&&rec.assigned_to){ await sb.from('object_workers').upsert({object_id:rec.object_id,worker_id:rec.assigned_to},{onConflict:'object_id,worker_id',ignoreDuplicates:true}); }
     closeModal(); toast(t('saved')); route();
   }catch(e){ $('#tsave').disabled=false; toast(errMsg(e)); }
 }
 async function vTasks(){
   const f=S.taskFilter;
   let q=sb.from('tasks').select('*, objects(name)').order('created_at',{ascending:false}).limit(300);
-  if(f==='open') q=q.neq('status','done'); else if(f==='done') q=q.eq('status','done');
+  if(f==='open'||f==='mine') q=q.neq('status','done'); else if(f==='done') q=q.eq('status','done');
+  if(f==='mine') q=q.eq('assigned_to',S.me.id);
+  if(f==='today') q=q.neq('status','done').lte('due_date',todayISO());
   const list=(chk(await q)||[]).map(x=>({...x,_objName:x.objects?.name}));
   main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_tasks')}</h1><button class="btn g sm" onclick="taskForm()">${t('newTask')}</button></div>
-  <div class="chips">${[['open','st_open'],['done','st_done'],['all','all']].map(c=>`<button class="chip ${f===c[0]?'on':''}" onclick="S.taskFilter='${c[0]}';route()">${t(c[1])}</button>`).join('')}</div>
+  <div class="chips">${(S.me.role==='worker'?[['today','today'],['mine','myTasks'],['open','st_open'],['done','st_done'],['all','all']]:S.me.role==='owner'?[['today','today'],['open','st_open'],['done','st_done'],['all','all']]:[['open','st_open'],['done','st_done'],['all','all']]).map(c=>`<button class="chip ${f===c[0]?'on':''}" onclick="S.taskFilter='${c[0]}';route()">${t(c[1])}</button>`).join('')}</div>
   ${list.length?list.map(taskCard).join(''):`<div class="empty">${t('noTasks')}</div>`}`);
 }
 
@@ -879,10 +962,10 @@ async function vTeam(){
     <div class="small muted">${isPhoneAcc(p.email)?'📱 '+esc(p.phone||''):esc(p.email||'')+(p.phone?' · '+esc(p.phone):'')}${p.company?' · 🏢 '+esc(p.company):''}</div></div>
     ${p.id===S.me.id?`<span class="badge">${roleName(p.role)}</span>`:`<select style="width:auto" onchange="setRole('${p.id}',this.value)">${['pending','worker','client','owner','disabled'].map(r=>`<option value="${r}" ${r===p.role?'selected':''}>${roleName(r)}</option>`).join('')}</select>`}
    </div>
-   <div class="row" style="margin-top:8px">${p.role==='worker'||p.role==='owner'?`<button class="btn l sm" onclick="assignForm('${p.id}')">${t('assignObjects')}</button>`:''}
+   <div class="row" style="margin-top:8px">${p.role==='worker'||p.role==='owner'?`<button class="btn l sm" onclick="assignForm('${p.id}')">${t('assignObjects')}</button>`:''}${p.role==='client'?`<button class="btn l sm" onclick="clientAssignForm('${p.id}')">${t('clientObjects')}</button>`:''}
     ${isPhoneAcc(p.email)&&p.id!==S.me.id?`<button class="btn l sm" onclick="resetPin('${p.id}')">${t('newPin')}</button>`:''}
     <span class="grow"></span>${p.role!=='owner'&&p.id!==S.me.id?`<button class="btn l sm" onclick="removeMember('${p.id}')">${t('removeMember')}</button>`:''}</div></div>`;
-  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_team')}</h1><button class="btn g sm" onclick="newWorkerForm()">${t('newWorker')}</button></div>
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_team')}</h1><button class="btn g sm" onclick="newWorkerForm()">${t('newWorker')}</button><button class="btn sm" onclick="newClientForm()">${t('newClient')}</button></div>
   <div class="card" style="background:#f2f8f2;border-color:#cfe6cf"><div class="small">${t('newWorkerText')}</div><div class="row" style="margin-top:8px"><code class="grow small" style="word-break:break-all">${esc(appUrl)}</code><button class="btn g sm" onclick="copyLink()">${t('copyLink')}</button></div></div>
   ${list.map(card).join('')}
   ${gone.length?`<div class="muted small" style="margin:16px 0 6px">${t('removedPeople')}: ${gone.map(p=>esc(p.full_name||'–')).join(', ')}</div>`:''}`);
@@ -910,6 +993,68 @@ async function createWorker(){
     let ok=false; for(let i=0;i<5&&!ok;i++){ const u=await sb.from('profiles').update({role,phone,full_name:name,lang}).eq('id',uid).select('id'); ok=!u.error&&u.data&&u.data.length; if(!ok) await new Promise(r=>setTimeout(r,700)); }
     closeModal(); showPin(name,phone,pin,lang,true); vTeam();
   }catch(e){ $('#nwerr').textContent=errMsg(e); $('#nwb').disabled=false; }
+}
+function newClientForm(){
+  modal(`<h3>${t('newClient').replace('+ ','')}</h3><div class="muted small">${t('newClientText')}</div>
+   <label>${t('fullName')} *</label><input id="ncn" autocomplete="off">
+   <label>${t('company').split('(')[0].trim()}</label><input id="ncc" placeholder="z. B. co.plan immo-concept GmbH">
+   <label>${t('email')}</label><input id="nce" type="email" inputmode="email">
+   <label>${t('phone')}</label><input id="ncp" type="tel" inputmode="tel" placeholder="0172 1234567">
+   <label>${t('language')}</label><select id="ncl">${LANGS.map(l=>`<option value="${l}" ${l==='de'?'selected':''}>${LNAMES[l]}</option>`).join('')}</select>
+   <div id="ncerr" class="err"></div>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn g" id="ncb" onclick="createClient()">${t('save')}</button></div>`);
+}
+const newPw = () => { const a='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; return [...crypto.getRandomValues(new Uint8Array(10))].map(x=>a[x%a.length]).join(''); };
+async function createClient(){
+  const name=val('ncn'), company=val('ncc'), email=val('nce').toLowerCase(), phone=val('ncp'), lang=$('#ncl').value;
+  if(!name){ $('#ncerr').textContent=t('required'); return; }
+  if(!email&&normPhone(phone).length<8){ $('#ncerr').textContent=t('emailOrPhone'); return; }
+  $('#ncb').disabled=true;
+  const byEmail=!!email, pw=byEmail?newPw():newPinCode(), login=byEmail?email:phoneEmail(phone);
+  try{
+    const c=cfg(); const tmp=supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'hms-tmp-c'}});
+    const r=await tmp.auth.signUp({email:login,password:pw,options:{data:{full_name:name,company,lang}}});
+    if(r.error) throw (/already|registered|exists/i.test(r.error.message)?new Error(t('phoneExists')):r.error);
+    const uid=r.data.user&&r.data.user.id; if(!uid) throw new Error('signup');
+    try{ await tmp.auth.signOut({scope:'local'}); }catch(e){}
+    let ok=false; for(let i=0;i<5&&!ok;i++){ const u=await sb.from('profiles').update({role:'client',phone:phone||null,company:company||null,full_name:name,lang}).eq('id',uid).select('id'); ok=!u.error&&u.data&&u.data.length; if(!ok) await new Promise(r=>setTimeout(r,700)); }
+    closeModal(); showClientAccess(name,email,phone,pw,lang); vTeam();
+  }catch(e){ $('#ncerr').textContent=errMsg(e); $('#ncb').disabled=false; }
+}
+function clientText(name,email,phone,pw,lang){
+  const url=location.origin+location.pathname;
+  const how = email ? `E-Mail: ${email}\nPasswort: ${pw}` : `Handynummer: ${phone}\nPIN: ${pw}`;
+  if(lang==='de'||!lang) return `Guten Tag ${name},\n\nab sofort können Sie Ihre Objekte, erledigte Arbeiten (mit Fotos) und Aufgaben in unserer App „Cvijetic HMS“ verfolgen und uns dort direkt Aufträge erteilen:\n${url}\n\nIhre Zugangsdaten:\n${how}\n\n${email?'Bitte unter „Kunde / Inhaber“ anmelden.':'Bitte unter „Mitarbeiter“ mit Handynummer und PIN anmelden.'}\n\nMit freundlichen Grüßen\nSaša Cvijetić\nCvijetic Hausmeisterservice · ${FIRM.phone}`;
+  return `Hello ${name},\n\nyou can now follow your properties, completed work (with photos) and tasks in our app “Cvijetic HMS”:\n${url}\n\nYour access:\n${how}\n\nBest regards\nSaša Cvijetić · ${FIRM.phone}`;
+}
+function showClientAccess(name,email,phone,pw,lang){
+  const txt=clientText(name,email,phone,pw,lang);
+  const wa=phone?'https://wa.me/'+normPhone(phone)+'?text='+encodeURIComponent(txt):'';
+  const mail=email?'mailto:'+email+'?subject='+encodeURIComponent('Ihr Zugang zur App Cvijetic HMS')+'&body='+encodeURIComponent(txt):'';
+  modal(`<h3>✅ ${t('accountCreated')}</h3><div><b>${esc(name)}</b></div>
+   <div class="card" style="margin-top:10px"><div class="small muted">${t('accessData')}</div>${email?`<div>✉️ ${esc(email)}</div>`:`<div>📱 ${esc(phone)}</div>`}<div style="font-size:22px;font-weight:800;letter-spacing:2px;margin-top:4px">${esc(pw)}</div></div>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('close')}</button>${mail?`<a class="btn" href="${mail}" style="text-decoration:none">${t('sendEmail')}</a>`:''}${wa?`<a class="btn g" href="${wa}" target="_blank" rel="noopener" style="text-decoration:none">${t('sendWhatsapp')}</a>`:''}</div>`);
+}
+async function clientAssignForm(cid){
+  const [objs,oc]=await Promise.all([sb.from('objects').select('id,name,address,city,customer,active').order('name'), sb.from('object_clients').select('object_id').eq('client_id',cid)]);
+  const list=chk(objs)||[], cur=new Set((chk(oc)||[]).map(x=>x.object_id));
+  S.cassign={cid,cur};
+  const comp=(S.people.find(p=>p.id===cid)||{}).company||'';
+  modal(`<h3>${t('clientObjects')}</h3><div class="muted">🏢 ${esc(pname(cid))}${comp?' · '+esc(comp):''} · <span id="ccnt">${cur.size}</span> ${t('selected')}</div>
+   <input id="cq" placeholder="${t('search')}" value="${esc(comp.split(' ')[0]||'')}" style="margin:10px 0" oninput="const q=this.value.toLowerCase();document.querySelectorAll('.crow').forEach(r=>r.hidden=!r.dataset.s.includes(q))">
+   <div style="max-height:55vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:0 10px">${list.filter(o=>o.active||cur.has(o.id)).map(o=>`<label class="chk crow" data-s="${esc([o.name,o.address,o.city,o.customer].join(' ').toLowerCase())}" style="border-bottom:1px solid var(--line)"><input type="checkbox" class="cw" value="${o.id}" ${cur.has(o.id)?'checked':''} onchange="document.getElementById('ccnt').textContent=document.querySelectorAll('.cw:checked').length"><span><b>${esc(o.name)}</b><br><span class="small muted">${esc([o.city,o.customer].filter(Boolean).join(' · '))}</span></span></label>`).join('')}</div>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="csave" onclick="saveClientAssign()">${t('save')}</button></div>`);
+  $('#cq').dispatchEvent(new Event('input'));
+}
+async function saveClientAssign(){
+  const {cid,cur}=S.cassign; const sel=new Set([...document.querySelectorAll('.cw:checked')].map(x=>x.value));
+  const add=[...sel].filter(x=>!cur.has(x)), del=[...cur].filter(x=>!sel.has(x));
+  $('#csave').disabled=true;
+  try{
+    if(del.length) chk(await sb.from('object_clients').delete().eq('client_id',cid).in('object_id',del));
+    if(add.length) chk(await sb.from('object_clients').insert(add.map(o=>({object_id:o,client_id:cid}))));
+    closeModal(); toast(t('saved'));
+  }catch(e){ $('#csave').disabled=false; toast(errMsg(e)); }
 }
 function waText(name,pin,lang){
   const url=location.origin+location.pathname;
@@ -971,9 +1116,12 @@ function openProfile(){
    <label>${t('phone')}</label><input id="pp" type="tel" value="${esc(m.phone||'')}">
    <label>${t('language')}</label><select id="pl">${LANGS.map(l=>`<option value="${l}" ${l===LANG?'selected':''}>${LNAMES[l]}</option>`).join('')}</select>
    ${installBtn()}
+   <div id="pbanner"></div>
    <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" onclick="saveProfile()">${t('save')}</button></div>
+   <div style="margin-top:12px">${contactCard()}</div>
    <div class="mact" style="border-top:1px solid var(--line);padding-top:14px;justify-content:space-between"><button class="btn l" onclick="logout()">⎋ ${t('logout')}</button>${m.role==='owner'?'':`<button class="btn r sm" onclick="deleteAccountForm()">🗑 ${t('deleteAccount')}</button>`}</div>`);
 }
+function fillProfileBanner(){ pushBanner().then(h=>{ const el=$('#pbanner'); if(el) el.innerHTML=h||`<div class="small muted">${t('notifDone')}</div>`; }); }
 function deleteAccountForm(){
   modal(`<h3>⚠️ ${t('deleteAccount')}</h3><p class="muted">${t('deleteAccountText')}</p>
    <label>${t('typeDelete')}</label><input id="dconf" autocomplete="off">
@@ -986,6 +1134,7 @@ async function doDeleteAccount(){
   try{ chk(await sb.rpc('delete_account',{})); closeModal(); clearInterval(S.tick); try{ await sb.auth.signOut({scope:'local'}); }catch(e){} S.uid=null; S.me=null; renderAuth(t('accountDeleted')); }
   catch(e){ $('#dbtn').disabled=false; toast(errMsg(e),5000); }
 }
+const _openProfile=openProfile; openProfile=function(){ _openProfile(); fillProfileBanner(); };
 async function saveProfile(){
   const rec={full_name:val('pn'),phone:val('pp')||null,lang:val('pl')};
   try{
