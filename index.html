@@ -217,6 +217,12 @@ const L = {
  profile:['Profil','Profile','Profil','Profil','Profil'],
  phone:['Telefon','Phone','Telefon','Telefon','Telefon'],
  language:['Sprache','Language','Jezik','Dil','Jezik'],
+ services:['Leistungen','Services','Poslovi','Hizmetler','Poslovi'],
+ addService:['+ eigene Leistung','+ own service','+ dodaj posao','+ hizmet ekle','+ dodaj posao'],
+ customer:['Auftraggeber / Verwaltung','Customer / manager','Naručilac / uprava','Müşteri / yönetim','Naručitelj / uprava'],
+ unassigned:['Ohne Mitarbeiter','No worker','Bez radnika','Çalışansız','Bez radnika'],
+ assignObjects:['🏢 Objekte zuweisen','🏢 Assign properties','🏢 Dodeli objekte','🏢 Bina ata','🏢 Dodijeli objekte'],
+ selected:['ausgewählt','selected','izabrano','seçili','odabrano'],
  route:['📍 Route','📍 Directions','📍 Ruta','📍 Yol tarifi','📍 Ruta'],
  required:['Bitte Pflichtfelder ausfüllen.','Please fill in required fields.','Popuni obavezna polja.','Lütfen zorunlu alanları doldurun.','Ispuni obavezna polja.'],
  inviteText:['So kommen Mitarbeiter und Kunden in die App: Link schicken → sie registrieren sich → Sie geben hier die Rolle frei.','How workers and clients join: send the link → they register → you approve their role here.','Kako radnici i klijenti ulaze u aplikaciju: pošalji link → oni se registruju → ti ovde odobriš ulogu.','Çalışanlar ve müşteriler nasıl katılır: bağlantıyı gönderin → kayıt olurlar → burada rolü onaylarsınız.','Kako radnici i klijenti ulaze u aplikaciju: pošalji poveznicu → registriraju se → ti ovdje odobriš ulogu.'],
@@ -235,6 +241,7 @@ let LANG = localStorage.getItem('mp_lang') || (LANGS.includes((navigator.languag
 if(LANG==='bs') LANG='sr';
 const t = k => { const r=L[k]; if(!r) return k; return r[LANGS.indexOf(LANG)] || r[0]; };
 
+const SERVICES=['Treppenhausreinigung','Gartenpflege','Winterdienst','Mülltonnen','Büroreinigung','Unterhaltsreinigung','Glasreinigung','Parkplatzreinigung','Tiefgarage','Gießen','Auf-/Abschließen','Hausmeisterservice'];
 /* ================= Hilfsfunktionen ================= */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -258,7 +265,7 @@ const val = id => { const el=document.getElementById(id); return el ? el.value.t
 
 /* ================= Zustand ================= */
 let sb = null;
-const S = { uid:undefined, me:null, view:null, param:null, active:null, people:[], objFilter:{q:'',wd:false}, taskFilter:'open', hoursYM:ymNow(), hoursWorker:'', authMode:'login', recovery:false };
+const S = { uid:undefined, me:null, view:null, param:null, active:null, people:[], objFilter:{q:'',mode:'all'}, taskFilter:'open', hoursYM:ymNow(), hoursWorker:'', authMode:'login', recovery:false };
 
 function cfg(){
   let url=SUPABASE_URL, key=SUPABASE_KEY;
@@ -460,7 +467,7 @@ async function vDash(){
    <div class="stat" onclick="go('tasks')"><div class="n">${ot.count||0}</div><div class="muted">${t('openTasks')}</div></div>
    <div class="stat" onclick="go('mat')"><div class="n">${mr.count||0}</div><div class="muted">${t('openRequests')}</div></div>
    <div class="stat g" onclick="go('hours')"><div class="n">${fmtDur(ms)}</div><div class="muted">${t('hoursMonth')}</div></div>
-   <div class="stat" onclick="S.objFilter.wd=true;go('objects')"><div class="n">❄ ${wdc.count||0}</div><div class="muted">${t('wd')}</div></div>
+   <div class="stat" onclick="S.objFilter.mode='wd';go('objects')"><div class="n">❄ ${wdc.count||0}</div><div class="muted">${t('wd')}</div></div>
   </div>
   <h2>🟢 ${t('activeNow')}</h2>
   ${a.length? a.map(e=>`<div class="card click row" onclick="go('obj','${e.object_id}')"><div class="grow"><b>${esc(pname(e.worker_id))}</b><div class="muted">${esc(e.objects?.name||'')} ${e.objects?.winterdienst?'<span class="badge b-wd">❄</span>':''}</div></div><div class="badge b-done">${fmtT(e.started_at)} · ${fmtDur(Date.now()-new Date(e.started_at))}</div></div>`).join('') : `<div class="empty">${t('nobody')}</div>`}`);
@@ -470,25 +477,27 @@ async function vDash(){
 async function vObjects(){
   let q=sb.from('objects').select('*').order('name');
   if(S.me.role!=='owner') q=q.eq('active',true);
-  const [objs,tk]=await Promise.all([q, sb.from('tasks').select('object_id').neq('status','done')]);
+  const [objs,tk,ow]=await Promise.all([q, sb.from('tasks').select('object_id').neq('status','done'), S.me.role==='owner'?sb.from('object_workers').select('object_id,worker_id'):Promise.resolve({data:[]})]);
   S.objs=chk(objs); const counts={}; (chk(tk)||[]).forEach(x=>counts[x.object_id]=(counts[x.object_id]||0)+1); S.objCounts=counts;
+  S.objW={}; (chk(ow)||[]).forEach(x=>(S.objW[x.object_id]=S.objW[x.object_id]||[]).push(x.worker_id));
   main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${S.me.role==='owner'?t('nav_objects'):t('myObjects')}</h1>${S.me.role==='owner'?`<button class="btn g sm" onclick="objectForm()">${t('newObject')}</button>`:''}</div>
   <input id="oq" placeholder="${t('search')}" value="${esc(S.objFilter.q)}" oninput="S.objFilter.q=this.value;drawObjList()" style="margin-bottom:10px">
-  <div class="chips"><button class="chip ${!S.objFilter.wd?'on':''}" onclick="S.objFilter.wd=false;drawObjList()">${t('all')}</button><button class="chip ${S.objFilter.wd?'on':''}" onclick="S.objFilter.wd=true;drawObjList()">${t('wdOnly')}</button></div>
+  <div class="chips" id="ochips"><button class="chip" onclick="S.objFilter.mode='all';drawObjList()">${t('all')}</button><button class="chip" onclick="S.objFilter.mode='wd';drawObjList()">${t('wdOnly')}</button>${S.me.role==='owner'?`<button class="chip" onclick="S.objFilter.mode='free';drawObjList()">⚠ ${t('unassigned')}</button>`:''}</div>
   <div id="olist"></div>`);
   drawObjList();
 }
 function drawObjList(){
-  const f=S.objFilter, q=f.q.toLowerCase();
-  document.querySelectorAll('.chips .chip').forEach((c,i)=>c.classList.toggle('on', i===(f.wd?1:0)));
-  const list=(S.objs||[]).filter(o=>(!f.wd||o.winterdienst)&&(!q||[o.name,o.address,o.city].join(' ').toLowerCase().includes(q)));
+  const f=S.objFilter, q=f.q.toLowerCase(), mode=f.mode||'all';
+  document.querySelectorAll('#ochips .chip').forEach((c,i)=>c.classList.toggle('on', ['all','wd','free'][i]===mode));
+  const list=(S.objs||[]).filter(o=>(mode!=='wd'||o.winterdienst)&&(mode!=='free'||!(S.objW[o.id]||[]).length)&&(!q||[o.name,o.address,o.city,o.customer,(o.services||[]).join(' ')].join(' ').toLowerCase().includes(q)));
   list.sort((a,b)=>(b.winterdienst-a.winterdienst)||(b.active-a.active)||a.name.localeCompare(b.name));
   $('#olist').innerHTML = list.length ? list.map(o=>{
     const n=S.objCounts[o.id]||0, run=S.active&&S.active.object_id===o.id;
     return `<div class="card obj click ${o.winterdienst?'wd':''}" style="${o.active?'':'opacity:.55'}" onclick="go('obj','${o.id}')">
      <div class="ot">${esc(o.name)} ${o.winterdienst?`<span class="badge b-wd">❄ ${t('wd')}</span>`:''} ${o.active?'':`<span class="badge">${t('inactive')}</span>`} ${run?`<span class="badge b-done">⏱ ${t('runningNow')}</span>`:''}</div>
      <div class="muted">${esc([o.address,o.city].filter(Boolean).join(', '))}</div>
-     <div class="row small muted" style="margin-top:4px">${n?`<span class="badge b-open">${n} ${t('openTasks')}</span>`:''}${S.me.role==='owner'&&o.client_id?`<span>· ${esc(pname(o.client_id))}</span>`:''}</div></div>`;
+     ${(o.services||[]).length?`<div class="row" style="margin-top:6px;gap:4px">${o.services.map(x=>`<span class="badge">${esc(x)}</span>`).join('')}</div>`:''}
+     <div class="row small muted" style="margin-top:4px">${n?`<span class="badge b-open">${n} ${t('openTasks')}</span>`:''}${S.me.role==='owner'&&o.customer?`<span>🏢 ${esc(o.customer)}</span>`:''}${S.me.role==='owner'?`<span>👷 ${(S.objW[o.id]||[]).length?(S.objW[o.id]).map(pname).map(esc).join(', '):'<b style="color:var(--red)">–</b>'}</span>`:''}</div></div>`;
   }).join('') : `<div class="empty">${t('noObjects')}</div>`;
 }
 
@@ -518,8 +527,9 @@ async function vObj(id){
    <div class="row"><h1 class="grow" style="margin:0">${esc(obj.name)}</h1>${role==='owner'?`<button class="btn l sm" onclick="objectForm('${id}')">✏️ ${t('edit')}</button>`:''}</div>
    ${obj.winterdienst?`<div style="margin:6px 0"><span class="badge b-wd">❄ ${t('wd')}</span></div>`:''}
    ${addr?`<div class="muted">${esc(addr)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}" target="_blank" rel="noopener">${t('route')}</a></div>`:''}
+   ${(obj.services||[]).length?`<div style="margin-top:10px"><div class="small muted">${t('services')}</div><div class="row" style="gap:6px;margin-top:4px">${obj.services.map(x=>`<span class="badge" style="font-size:13px;padding:4px 10px">✓ ${esc(x)}</span>`).join('')}</div></div>`:''}
    ${obj.notes?`<div style="margin-top:8px;white-space:pre-wrap">${esc(obj.notes)}</div>`:''}
-   ${role==='owner'?`<div class="small muted" style="margin-top:8px">👷 ${wl.length?wl.map(pname).map(esc).join(', '):'–'}${obj.client_id?` · 🏢 ${esc(pname(obj.client_id))}`:''}</div>`:''}
+   ${role==='owner'?`<div class="small muted" style="margin-top:8px">👷 ${wl.length?wl.map(pname).map(esc).join(', '):'–'}${obj.customer?` · 🏢 ${esc(obj.customer)}`:''}${obj.client_id?` · 👤 ${esc(pname(obj.client_id))}`:''}</div>`:''}
   </div>
   ${timer}
   <h2>✅ ${t('nav_tasks')}<span class="sp"></span><button class="btn sm" onclick="taskForm('${id}')">${t('newTask')}</button></h2>
@@ -531,7 +541,8 @@ async function vObj(id){
 }
 
 function objectForm(id){
-  const o = id ? S.curObj : {name:'',address:'',city:'',client_id:null,winterdienst:false,notes:'',active:true};
+  const o = id ? S.curObj : {name:'',address:'',city:'',client_id:null,winterdienst:false,notes:'',active:true,services:[],customer:''};
+  const svc=[...new Set([...SERVICES,...(o.services||[])])];
   const assigned = id ? (S.curAssigned||[]) : [];
   const ws=S.people.filter(p=>p.role==='worker');
   const go2 = async () => {
@@ -542,6 +553,9 @@ function objectForm(id){
     <label>${t('address')}</label><input id="fa" value="${esc(o.address)}">
     <label>${t('city')}</label><input id="fc" value="${esc(o.city)}" placeholder="74076 Heilbronn">
     <label>${t('client')}</label><select id="fcl"><option value="">${t('none')}</option>${clients().map(c=>`<option value="${c.id}" ${c.id===o.client_id?'selected':''}>${esc(c.company?c.company+' – ':'')}${esc(c.full_name||c.email)}</option>`).join('')}</select>
+    <label>${t('customer')}</label><input id="fcu" value="${esc(o.customer||'')}" placeholder="z. B. co.plan immo-concept">
+    <label>${t('services')}</label><div class="chips" id="fsv" style="margin-bottom:4px">${svc.map(x=>`<label class="chip ${(o.services||[]).includes(x)?'on':''}" style="display:inline-flex;align-items:center;margin:0"><input type="checkbox" value="${esc(x)}" ${(o.services||[]).includes(x)?'checked':''} style="display:none" onchange="this.parentNode.classList.toggle('on',this.checked)">${esc(x)}</label>`).join('')}</div>
+    <div class="row"><input id="fsvn" class="grow" placeholder="${t('addService')}" style="width:auto"><button class="btn l sm" type="button" onclick="addSvc()">+</button></div>
     <label class="chk"><input type="checkbox" id="fwd" ${o.winterdienst?'checked':''}>❄ ${t('wd')}</label>
     <label class="chk"><input type="checkbox" id="fact" ${o.active?'checked':''}>${t('active')}</label>
     <label>${t('notes')}</label><textarea id="fno">${esc(o.notes)}</textarea>
@@ -550,8 +564,9 @@ function objectForm(id){
   };
   go2();
 }
+function addSvc(){ const v=val('fsvn'); if(!v) return; const l=document.createElement('label'); l.className='chip on'; l.style.cssText='display:inline-flex;align-items:center;margin:0'; l.innerHTML=`<input type="checkbox" value="${esc(v)}" checked style="display:none" onchange="this.parentNode.classList.toggle('on',this.checked)">${esc(v)}`; $('#fsv').appendChild(l); $('#fsvn').value=''; }
 async function saveObject(id){
-  const rec={name:val('fn'),address:val('fa')||null,city:val('fc')||null,client_id:val('fcl')||null,winterdienst:$('#fwd').checked,active:$('#fact').checked,notes:val('fno')||null};
+  const rec={name:val('fn'),address:val('fa')||null,city:val('fc')||null,client_id:val('fcl')||null,winterdienst:$('#fwd').checked,active:$('#fact').checked,notes:val('fno')||null,customer:val('fcu')||null,services:[...document.querySelectorAll('#fsv input:checked')].map(x=>x.value)};
   if(!rec.name) return toast(t('required'));
   const sel=[...document.querySelectorAll('.fw:checked')].map(x=>x.value);
   $('#fsave').disabled=true;
@@ -782,7 +797,26 @@ async function vTeam(){
    <div class="row"><div class="grow"><b>${esc(p.full_name||'–')}</b> ${p.id===S.me.id?`<span class="muted small">${t('you')}</span>`:''}
     <div class="small muted">${esc(p.email||'')}${p.phone?' · '+esc(p.phone):''}${p.company?' · 🏢 '+esc(p.company):''}</div></div>
     ${p.id===S.me.id?`<span class="badge">${roleName(p.role)}</span>`:`<select style="width:auto" onchange="setRole('${p.id}',this.value)">${['pending','worker','client','owner','disabled'].map(r=>`<option value="${r}" ${r===p.role?'selected':''}>${roleName(r)}</option>`).join('')}</select>`}
-   </div></div>`).join('')}`);
+   </div>${p.role==='worker'||p.role==='owner'?`<div style="margin-top:8px"><button class="btn l sm" onclick="assignForm('${p.id}')">${t('assignObjects')}</button></div>`:''}</div>`).join('')}`);
+}
+async function assignForm(wid){
+  const [objs,ow]=await Promise.all([sb.from('objects').select('id,name,address,city,customer,active').order('name'), sb.from('object_workers').select('object_id').eq('worker_id',wid)]);
+  const list=chk(objs)||[], cur=new Set((chk(ow)||[]).map(x=>x.object_id));
+  S.assign={wid,cur};
+  modal(`<h3>${t('assignObjects')}</h3><div class="muted">👷 ${esc(pname(wid))} · <span id="acnt">${cur.size}</span> ${t('selected')}</div>
+   <input id="aq" placeholder="${t('search')}" style="margin:10px 0" oninput="const q=this.value.toLowerCase();document.querySelectorAll('.arow').forEach(r=>r.hidden=!r.dataset.s.includes(q))">
+   <div style="max-height:55vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:0 10px">${list.map(o=>`<label class="chk arow" data-s="${esc([o.name,o.address,o.city,o.customer].join(' ').toLowerCase())}" style="border-bottom:1px solid var(--line)"><input type="checkbox" class="aw" value="${o.id}" ${cur.has(o.id)?'checked':''} onchange="document.getElementById('acnt').textContent=document.querySelectorAll('.aw:checked').length"><span><b>${esc(o.name)}</b><br><span class="small muted">${esc([o.city,o.customer].filter(Boolean).join(' · '))}</span></span></label>`).join('')}</div>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="asave" onclick="saveAssign()">${t('save')}</button></div>`);
+}
+async function saveAssign(){
+  const {wid,cur}=S.assign; const sel=new Set([...document.querySelectorAll('.aw:checked')].map(x=>x.value));
+  const add=[...sel].filter(x=>!cur.has(x)), del=[...cur].filter(x=>!sel.has(x));
+  $('#asave').disabled=true;
+  try{
+    if(del.length) chk(await sb.from('object_workers').delete().eq('worker_id',wid).in('object_id',del));
+    if(add.length) chk(await sb.from('object_workers').insert(add.map(o=>({object_id:o,worker_id:wid}))));
+    closeModal(); toast(t('saved'));
+  }catch(e){ $('#asave').disabled=false; toast(errMsg(e)); }
 }
 async function setRole(id,role){
   try{ chk(await sb.from('profiles').update({role}).eq('id',id)); toast(t('saved')); route(); }catch(e){ toast(errMsg(e)); route(); }
