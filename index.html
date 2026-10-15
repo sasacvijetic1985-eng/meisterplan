@@ -282,6 +282,13 @@ const L = {
  newWorkerText:['Name und Handynummer eintragen – die App erstellt eine PIN. Danach per WhatsApp schicken.','Enter name and mobile number – the app creates a PIN. Then send it via WhatsApp.','Upiši ime i broj mobilnog – aplikacija pravi PIN. Zatim ga pošalji preko WhatsApp-a.','Ad ve cep numarası girin – uygulama PIN oluşturur. Sonra WhatsApp ile gönderin.','Upiši ime i broj mobitela – aplikacija stvara PIN. Zatim ga pošalji WhatsAppom.'],
  accountCreated:['Konto erstellt','Account created','Nalog napravljen','Hesap oluşturuldu','Račun stvoren'],
  sendWhatsapp:['💬 Per WhatsApp senden','💬 Send via WhatsApp','💬 Pošalji na WhatsApp','💬 WhatsApp ile gönder','💬 Pošalji na WhatsApp'],
+ accessAll:['📤 Zugang an alle','📤 Access to all','📤 Pristup svima','📤 Herkese erişim','📤 Pristup svima'],
+ accessAllText:['Jeder ausgewählte Mitarbeiter bekommt eine NEUE PIN (die alte gilt dann nicht mehr) und eine fertige WhatsApp-Nachricht mit Anleitung.','Each selected worker gets a NEW PIN (the old one stops working) and a ready WhatsApp message with instructions.','Svaki izabrani radnik dobija NOV PIN (stari prestaje da važi) i gotovu WhatsApp poruku sa uputstvom.','Seçilen her çalışan YENİ bir PIN alır (eskisi geçersiz olur) ve talimatlı hazır bir WhatsApp mesajı.','Svaki odabrani radnik dobiva NOVI PIN (stari prestaje vrijediti) i gotovu WhatsApp poruku s uputama.'],
+ makePins:['PINs erstellen','Create PINs','Napravi PIN-ove','PIN oluştur','Napravi PIN-ove'],
+ needPhone:['Handynummer fehlt','Phone number missing','Fali broj telefona','Telefon numarası eksik','Nedostaje broj telefona'],
+ accessReady:['Jetzt jedem auf „WhatsApp“ tippen und senden. Die PINs werden nur hier einmal angezeigt – Seite erst schließen, wenn alle gesendet sind.','Now tap “WhatsApp” for each and send. PINs are shown only here, once – close this page only after all are sent.','Sada svakom dodirni „WhatsApp“ i pošalji. PIN-ovi se vide samo ovde, jednom – ne zatvaraj stranu dok ne pošalješ svima.','Şimdi her biri için “WhatsApp”a dokun ve gönder. PIN’ler yalnızca burada bir kez görünür.','Sada svakome dodirni „WhatsApp“ i pošalji. PIN-ovi se vide samo ovdje, jednom – ne zatvaraj stranicu dok ne pošalješ svima.'],
+ opened:['geöffnet','opened','otvoreno','açıldı','otvoreno'],
+ movedToPhone:['auf Handy-Login umgestellt','switched to phone login','prebačen na prijavu telefonom','telefon girişine geçirildi','prebačen na prijavu mobitelom'],
  newPin:['🔑 Neue PIN','🔑 New PIN','🔑 Novi PIN','🔑 Yeni PIN','🔑 Novi PIN'],
  phoneExists:['Für diese Nummer gibt es schon ein Konto.','An account with this number already exists.','Za ovaj broj već postoji nalog.','Bu numara için hesap zaten var.','Za ovaj broj već postoji račun.'],
  removeMember:['🗑 Entfernen','🗑 Remove','🗑 Ukloni','🗑 Kaldır','🗑 Ukloni'],
@@ -1113,10 +1120,69 @@ async function vTeam(){
    <div class="row" style="margin-top:8px">${p.role==='worker'||p.role==='owner'?`<button class="btn l sm" onclick="assignForm('${p.id}')">${t('assignObjects')}</button>`:''}${p.role==='client'?`<button class="btn l sm" onclick="clientAssignForm('${p.id}')">${t('clientObjects')}</button>`:''}
     ${isPhoneAcc(p.email)&&p.id!==S.me.id?`<button class="btn l sm" onclick="resetPin('${p.id}')">${t('newPin')}</button>`:''}
     <span class="grow"></span>${p.role!=='owner'&&p.id!==S.me.id?`<button class="btn l sm" onclick="removeMember('${p.id}')">${t('removeMember')}</button>`:''}</div></div>`;
-  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_team')}</h1><button class="btn g sm" onclick="newWorkerForm()">${t('newWorker')}</button><button class="btn sm" onclick="newClientForm()">${t('newClient')}</button></div>
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('nav_team')}</h1><button class="btn g sm" onclick="newWorkerForm()">${t('newWorker')}</button><button class="btn sm" onclick="newClientForm()">${t('newClient')}</button><button class="btn sm" onclick="accessAllForm()">${t('accessAll')}</button></div>
   <div class="card" style="background:#f2f8f2;border-color:#cfe6cf"><div class="small">${t('newWorkerText')}</div><div class="row" style="margin-top:8px"><code class="grow small" style="word-break:break-all">${esc(appUrl)}</code><button class="btn g sm" onclick="copyLink()">${t('copyLink')}</button></div></div>
   ${list.map(card).join('')}
   ${gone.length?`<div class="muted small" style="margin:16px 0 6px">${t('removedPeople')}: ${gone.map(p=>esc(p.full_name||'–')).join(', ')}</div>`:''}`);
+}
+/* ===== Zugang an alle Mitarbeiter (neue PIN + WhatsApp-Anleitung) ===== */
+function guideText(name,phone,pin,lang){
+  const url=location.origin+location.pathname, first=String(name||'').split(' ')[0];
+  const T={
+  sr:`Zdravo ${first}! 👋\nOd sada radimo preko naše aplikacije *Cvijetic HMS*.\n\n🔗 ${url}\n📱 Tvoj broj: ${phone}\n🔑 Tvoj PIN: *${pin}*\n\n*Kako da uđeš:*\n1. Otvori link iznad.\n2. Android: dodirni „📲 Instaliraj aplikaciju“. iPhone (Safari): dole „Podeli“ □↑ → „Dodaj na početni ekran“.\n3. Otvori aplikaciju sa ikonice, izaberi „📱 Radnik“, upiši svoj broj i PIN.\n4. Dodirni „🔔 Uključi obaveštenja“ da ti odmah stižu novi zadaci.\n\n*Šta radiš u aplikaciji:*\n📅 Plan – tvoji zadaci po danima\n🏢 Objekti – adresa i šta se radi; 🚗 „Vozi do tamo“ pokreće navigaciju\n▶ „Počni rad“ kad stigneš, ■ „Završi rad“ kad završiš – tako se beleže sati\n📷 Slikaj urađen posao\n✅ Kad je zadatak gotov, dodirni „Završen“\n📦 Materijal – javi šta fali (so, kese…)\n\nPIN ne daj nikome. Pitanja: Saša 0172 7061767`,
+  hr:`Bok ${first}! 👋\nOd sada radimo preko naše aplikacije *Cvijetic HMS*.\n\n🔗 ${url}\n📱 Tvoj broj: ${phone}\n🔑 Tvoj PIN: *${pin}*\n\n*Kako ući:*\n1. Otvori poveznicu iznad.\n2. Android: dodirni „📲 Instaliraj aplikaciju“. iPhone (Safari): dolje „Dijeli“ □↑ → „Dodaj na početni zaslon“.\n3. Otvori aplikaciju s ikone, odaberi „📱 Radnik“, upiši svoj broj i PIN.\n4. Dodirni „🔔 Uključi obavijesti“ da ti odmah stižu novi zadaci.\n\n*Što radiš u aplikaciji:*\n📅 Plan – tvoji zadaci po danima\n🏢 Objekti – adresa i što se radi; 🚗 „Vozi do tamo“ pokreće navigaciju\n▶ „Počni rad“ kad stigneš, ■ „Završi rad“ kad završiš – tako se bilježe sati\n📷 Slikaj napravljen posao\n✅ Kad je zadatak gotov, dodirni „Završen“\n📦 Materijal – javi što fali (sol, vreće…)\n\nPIN ne daj nikome. Pitanja: Saša 0172 7061767`,
+  de:`Hallo ${first}! 👋\nAb sofort arbeiten wir mit unserer App *Cvijetic HMS*.\n\n🔗 ${url}\n📱 Deine Nummer: ${phone}\n🔑 Deine PIN: *${pin}*\n\n*So meldest du dich an:*\n1. Link oben öffnen.\n2. Android: „📲 App installieren“ tippen. iPhone (Safari): unten „Teilen“ □↑ → „Zum Home-Bildschirm“.\n3. App über das Symbol öffnen, „📱 Mitarbeiter“ wählen, Nummer und PIN eingeben.\n4. „🔔 Benachrichtigungen“ einschalten, damit neue Aufgaben sofort ankommen.\n\n*In der App:*\n📅 Plan – deine Aufgaben nach Tagen\n🏢 Objekte – Adresse und Leistungen; 🚗 „Hinfahren“ startet die Navigation\n▶ „Arbeit starten“ bei Ankunft, ■ „Arbeit beenden“ am Ende – so werden die Stunden erfasst\n📷 Fotos von der erledigten Arbeit\n✅ Erledigte Aufgabe auf „Erledigt“ setzen\n📦 Material – melden, was fehlt\n\nPIN niemandem geben. Fragen: Saša 0172 7061767`};
+  return T[lang]||(lang==='en'||lang==='tr'?T.de:T.sr);
+}
+async function accessAllForm(){
+  S.people = chk(await sb.from('profiles').select('id,full_name,role,company,email,phone,deleted_at,lang').order('full_name'));
+  const ws=S.people.filter(p=>p.role==='worker'&&!p.deleted_at);
+  modal(`<h3>${t('accessAll')}</h3><div class="muted small">${t('accessAllText')}</div>
+   <div style="margin-top:10px;max-height:55vh;overflow:auto">${ws.map(p=>`<div style="border-bottom:1px solid var(--line);padding:6px 0"><label class="chk" style="margin:0"><input type="checkbox" class="aa" value="${p.id}" checked><span><b>${esc(p.full_name||'–')}</b><br><span class="small muted">${p.phone?'📱 '+esc(p.phone):''}${isPhoneAcc(p.email)?'':' · ✉️ '+esc(p.email||'')}</span></span></label>
+    ${p.phone?'':`<input id="aph_${p.id}" type="tel" inputmode="tel" placeholder="${t('needPhone')} – 0172 1234567" style="margin-top:4px">`}</div>`).join('')}</div>
+   <div id="aaerr" class="err"></div>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn g" id="aab" onclick="doAccessAll()">🔑 ${t('makePins')}</button></div>`);
+}
+async function doAccessAll(){
+  const ids=[...document.querySelectorAll('.aa:checked')].map(x=>x.value);
+  const extra={}; ids.forEach(id=>{ const el=document.getElementById('aph_'+id); if(el) extra[id]=el.value.trim(); });
+  if(!ids.length) return;
+  $('#aab').disabled=true; $('#aab').textContent='…';
+  const res=[];
+  for(const id of ids){
+    const p=S.people.find(x=>x.id===id); if(!p) continue;
+    const phone=p.phone||extra[id]||''; const lang=p.lang||'sr', name=p.full_name||'';
+    if(normPhone(phone).length<8){ res.push({name,err:t('needPhone')}); continue; }
+    const pin=newPinCode();
+    try{
+      if(isPhoneAcc(p.email)){
+        chk(await sb.rpc('owner_set_pin',{target:id,pin}));
+        if(!p.phone) await sb.from('profiles').update({phone}).eq('id',id);
+        res.push({name,phone,pin,lang});
+      } else {
+        const c=cfg(); const tmp=supabase.createClient(c.url,c.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'hms-tmp-a'}});
+        const r=await tmp.auth.signUp({email:phoneEmail(phone),password:pin,options:{data:{full_name:name,lang}}});
+        if(r.error) throw (/already|registered|exists/i.test(r.error.message)?new Error(t('phoneExists')):r.error);
+        const nid=r.data.user&&r.data.user.id; if(!nid) throw new Error('signup');
+        try{ await tmp.auth.signOut({scope:'local'}); }catch(e){}
+        let ok=false; for(let i=0;i<6&&!ok;i++){ const u=await sb.from('profiles').update({role:'worker',phone,full_name:name,lang}).eq('id',nid).select('id'); ok=!u.error&&u.data&&u.data.length; if(!ok) await new Promise(r=>setTimeout(r,700)); }
+        const ow=chk(await sb.from('object_workers').select('object_id').eq('worker_id',id))||[];
+        if(ow.length) await sb.from('object_workers').upsert(ow.map(x=>({object_id:x.object_id,worker_id:nid})),{onConflict:'object_id,worker_id',ignoreDuplicates:true});
+        await sb.from('tasks').update({assigned_to:nid}).eq('assigned_to',id).neq('status','done');
+        await sb.from('profiles').update({role:'disabled'}).eq('id',id);
+        res.push({name,phone,pin,lang,moved:true});
+      }
+    }catch(e){ res.push({name,err:errMsg(e)}); }
+  }
+  closeModal(); S.accessRes=res; vAccess();
+}
+function vAccess(){
+  const res=S.accessRes||[];
+  main(`<h1>📤 ${t('accessAll')}</h1><div class="card" style="background:#fff8ec;border-color:var(--amber)">⚠️ ${t('accessReady')}</div>
+   ${res.map((r,i)=>r.err?`<div class="card"><b>${esc(r.name)}</b><div class="err">${esc(r.err)}</div></div>`:
+   `<div class="card row"><div class="grow"><b>${esc(r.name)}</b><div class="small muted">📱 ${esc(r.phone)}${r.moved?' · '+t('movedToPhone'):''}</div><div style="font-size:20px;font-weight:800;letter-spacing:4px">${r.pin}</div></div>
+    <a class="btn g" id="wa${i}" href="https://wa.me/${normPhone(r.phone)}?text=${encodeURIComponent(guideText(r.name,r.phone,r.pin,r.lang))}" target="_blank" rel="noopener" style="text-decoration:none" onclick="this.textContent='✓ ${t('opened')}';this.classList.add('l')">💬 WhatsApp</a></div>`).join('')}
+   <div class="mact"><button class="btn l" onclick="go('team')">${t('back')}</button></div>`);
 }
 function newWorkerForm(){
   modal(`<h3>${t('newWorker').replace('+ ','')}</h3><div class="muted small">${t('newWorkerText')}</div>
