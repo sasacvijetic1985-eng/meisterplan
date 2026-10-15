@@ -96,6 +96,31 @@ th{background:#f7f9fc;font-size:12px;color:var(--muted)}
 .link{background:none;border:0;color:var(--blue);cursor:pointer;padding:8px;text-decoration:underline}
 .langs{display:flex;gap:6px;justify-content:center;margin:14px 0}
 .empty{color:var(--muted);text-align:center;padding:22px 0}
+/* Plan / Kalender */
+.calnav{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.calnav .ttl{flex:1;text-align:center;font-weight:700;font-size:16px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:12px}
+.cal .wd{font-size:11px;color:var(--muted);text-align:center;padding:2px 0;text-transform:uppercase;letter-spacing:.5px}
+.cd{background:var(--card);border:1px solid var(--line);border-radius:9px;min-height:50px;padding:4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font:inherit;color:inherit}
+.cd .dn{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.cd.out{opacity:.4}
+.cd.today{border:2px solid var(--blue)}
+.cd.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+.cd .cnt{font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:10px;background:#fff3df;color:var(--amber)}
+.cd .cnt.ok{background:#e2f4e2;color:var(--green2)}
+.cd .cnt.late{background:#fde7e7;color:var(--red)}
+.cd.sel .cnt{background:#fff}
+.day{margin-bottom:14px}
+.dayh{display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:2px solid var(--line);margin-bottom:8px}
+.dayh.today{border-bottom-color:var(--blue)}
+.dayh b{font-size:15px}
+.dayh .grow{flex:1}
+.pt{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:9px 12px;margin-bottom:6px;cursor:pointer}
+.pt.in_progress{border-left-color:var(--blue)}
+.pt.done{border-left-color:var(--green);opacity:.7}
+.pt.done .pttl{text-decoration:line-through}
+.pt .pttl{font-weight:600}
+.pt .small{margin-top:2px}
 .err{color:var(--red);font-size:13.5px;margin-top:8px}
 .spin{text-align:center;color:var(--muted);padding:40px 0}
 a{color:var(--blue)}
@@ -294,6 +319,22 @@ const L = {
  newPlace:['➕ Neue Adresse (Auftrag nach Absprache)','➕ New address (one-off job)','➕ Nova adresa (posao po dogovoru)','➕ Yeni adres (tek seferlik iş)','➕ Nova adresa (posao po dogovoru)'],
  oneOff:['📌 Nach Absprache','📌 One-off','📌 Po dogovoru','📌 Tek seferlik','📌 Po dogovoru'],
  today:['Heute','Today','Danas','Bugün','Danas'],
+ nav_plan:['Plan','Plan','Plan','Plan','Plan'],
+ planTitle:['📅 Arbeitsplan','📅 Work plan','📅 Plan rada','📅 İş planı','📅 Plan rada'],
+ week:['Woche','Week','Nedelja','Hafta','Tjedan'],
+ monthV:['Monat','Month','Mesec','Ay','Mjesec'],
+ todayBtn:['Heute','Today','Danas','Bugün','Danas'],
+ allWorkers:['Alle Mitarbeiter','All workers','Svi radnici','Tüm çalışanlar','Svi radnici'],
+ noTasksDay:['Keine Aufgaben an diesem Tag.','No tasks on this day.','Nema zadataka za ovaj dan.','Bu gün görev yok.','Nema zadataka za ovaj dan.'],
+ addForDay:['+ Aufgabe','+ Task','+ Zadatak','+ Görev','+ Zadatak'],
+ repeat:['Wiederholen','Repeat','Ponavljanje','Tekrarla','Ponavljanje'],
+ rp_none:['Einmalig','Once','Jednom','Bir kez','Jednom'],
+ rp_w1:['Jede Woche','Every week','Svake nedelje','Her hafta','Svaki tjedan'],
+ rp_w2:['Alle 2 Wochen','Every 2 weeks','Svake 2 nedelje','2 haftada bir','Svaka 2 tjedna'],
+ rp_m1:['Jeden Monat','Every month','Svakog meseca','Her ay','Svaki mjesec'],
+ rp_until:['Wiederholen bis','Repeat until','Ponavljaj do','Şu tarihe kadar','Ponavljaj do'],
+ rp_made:['Aufgaben angelegt','tasks created','zadataka napravljeno','görev oluşturuldu','zadataka napravljeno'],
+ unassigned:['nicht zugeteilt','unassigned','nije dodeljeno','atanmadı','nije dodijeljeno'],
  todayTasks:['📅 Heute zu erledigen','📅 To do today','📅 Danas za uraditi','📅 Bugün yapılacak','📅 Danas za napraviti'],
  weatherTitle:['❄ Wetter Winterdienst (24 h)','❄ Winter service weather (24 h)','❄ Vreme za zimsku službu (24h)','❄ Kış hizmeti hava (24 sa)','❄ Vrijeme za zimsku službu (24h)'],
  noSnow:['kein Schnee','no snow','nema snega','kar yok','nema snijega'],
@@ -374,7 +415,7 @@ const val = id => { const el=document.getElementById(id); return el ? el.value.t
 
 /* ================= Zustand ================= */
 let sb = null;
-const S = { uid:undefined, me:null, view:null, param:null, active:null, people:[], objFilter:{q:'',mode:'active'}, taskFilter:'open', hoursYM:ymNow(), hoursWorker:'', authMode:'phone', recovery:false };
+const S = { uid:undefined, me:null, view:null, param:null, active:null, people:[], objFilter:{q:'',mode:'active'}, taskFilter:'open', plan:{mode:'week',ref:null,sel:null,worker:''}, hoursYM:ymNow(), hoursWorker:'', authMode:'phone', recovery:false };
 
 function cfg(){
   let url=SUPABASE_URL, key=SUPABASE_KEY;
@@ -511,9 +552,9 @@ async function logout(){ clearInterval(S.tick); await sb.auth.signOut(); }
 /* ================= Gerüst ================= */
 function navItems(){
   const r=S.me.role;
-  if(r==='owner') return [['dash','🏠','nav_dash'],['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat'],['team','👥','nav_team']];
-  if(r==='worker') return [['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat']];
-  return [['objects','🏢','nav_objects'],['tasks','✅','nav_tasks']];
+  if(r==='owner') return [['dash','🏠','nav_dash'],['plan','📅','nav_plan'],['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat'],['team','👥','nav_team']];
+  if(r==='worker') return [['plan','📅','nav_plan'],['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat']];
+  return [['objects','🏢','nav_objects'],['plan','📅','nav_plan'],['tasks','✅','nav_tasks']];
 }
 function go(view,param){ S.view=view; S.param=param||null; route(); window.scrollTo(0,0); }
 function shell(){
@@ -528,7 +569,7 @@ function shell(){
 async function route(){
   if(!S.me) return;
   shell();
-  const V={dash:vDash,objects:vObjects,obj:vObj,tasks:vTasks,hours:vHours,mat:vMat,team:vTeam};
+  const V={dash:vDash,plan:vPlan,objects:vObjects,obj:vObj,tasks:vTasks,hours:vHours,mat:vMat,team:vTeam};
   const f=V[S.view]||vObjects;
   try{ await f(S.param); }catch(e){ $('#main').innerHTML=`<div class="card"><div class="err">${esc(errMsg(e))}</div><div class="mact"><button class="btn" onclick="route()">${t('refresh')}</button></div></div>`; }
 }
@@ -798,13 +839,13 @@ async function deleteTask(id){
   if(!confirm(t('confirmDelete'))) return;
   try{ chk(await sb.from('tasks').delete().eq('id',id)); route(); }catch(e){ toast(errMsg(e)); }
 }
-async function taskForm(oid, tid){
+async function taskForm(oid, tid, due){
   const role=S.me.role;
   let x={title:'',description:'',assigned_to:null,due_date:'',object_id:oid||''};
   if(tid){ x = chk(await sb.from('tasks').select('*').eq('id',tid).single()); }
   let objs=[];
   if(!oid){ objs=chk(await sb.from('objects').select('id,name').eq('active',true).order('name')); }
-  if(!tid&&!x.due_date) x.due_date=todayISO();
+  if(!tid&&!x.due_date) x.due_date=due||todayISO();
   modal(`<h3>${tid?t('edit'):t('newTask').replace('+ ','')}</h3>
    ${oid?`<div class="muted">🏢 ${esc((S.curObj&&S.curObj.id===oid)?S.curObj.name:'')}</div><input type="hidden" id="tob" value="${oid}">`:`<label>${t('object')} *</label><select id="tob" onchange="document.getElementById('tnew').hidden=this.value!=='__new'"><option value="">${t('chooseObject')}</option>${role==='owner'?`<option value="__new">${t('newPlace')}</option>`:''}${objs.map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>
    <div id="tnew" hidden class="card" style="margin-top:8px;background:#f7f9fc"><label style="margin-top:0">${t('address')} *</label><input id="tna" placeholder="Musterstraße 1"><label>${t('city')}</label><input id="tnc" placeholder="74076 Heilbronn"><label>${t('customer')}</label><input id="tnk" placeholder="Name / Firma"></div>`}
@@ -812,6 +853,7 @@ async function taskForm(oid, tid){
    <label>${t('description')}</label><textarea id="tde">${esc(x.description)}</textarea>
    ${role==='owner'?`<label>${t('assignedTo')}</label><select id="tas"><option value="">${t('none')}</option>${workers().map(w=>`<option value="${w.id}" ${w.id===x.assigned_to?'selected':''}>${esc(w.full_name||w.email)}</option>`).join('')}</select>`:''}
    <label>${t('due')}</label><input id="tdu" type="date" value="${esc(x.due_date||'')}">
+   ${!tid&&role==='owner'?`<div class="row" style="align-items:flex-end"><div class="grow"><label>${t('repeat')}</label><select id="trp" onchange="document.getElementById('trpu').disabled=this.value==='none'"><option value="none">${t('rp_none')}</option><option value="w1">${t('rp_w1')}</option><option value="w2">${t('rp_w2')}</option><option value="m1">${t('rp_m1')}</option></select></div><div class="grow"><label>${t('rp_until')}</label><input id="trpu" type="date" disabled value="${addDaysISO(x.due_date||todayISO(),91)}"></div></div>`:''}
    <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="tsave" onclick="saveTask(${tid?`'${tid}'`:'null'})">${t('save')}</button></div>`);
 }
 async function saveTask(tid){
@@ -826,10 +868,81 @@ async function saveTask(tid){
   $('#tsave').disabled=true;
   try{
     if(tid) chk(await sb.from('tasks').update(rec).eq('id',tid));
-    else chk(await sb.from('tasks').insert({...rec,created_by:S.me.id}));
+    else {
+      const dates=repeatDates(rec.due_date, $('#trp')?$('#trp').value:'none', val('trpu'));
+      chk(await sb.from('tasks').insert(dates.map(d=>({...rec,due_date:d,created_by:S.me.id}))));
+      if(dates.length>1) toast(dates.length+' '+t('rp_made'));
+    }
     if(S.me.role==='owner'&&rec.assigned_to){ await sb.from('object_workers').upsert({object_id:rec.object_id,worker_id:rec.assigned_to},{onConflict:'object_id,worker_id',ignoreDuplicates:true}); }
     closeModal(); toast(t('saved')); route();
   }catch(e){ $('#tsave').disabled=false; toast(errMsg(e)); }
+}
+/* ================= Plan (Kalender) ================= */
+const isoOf = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const dOf = iso => { const [y,m,d]=iso.split('-').map(Number); return new Date(y,m-1,d); };
+const addDaysISO = (iso,n) => { const d=dOf(iso); d.setDate(d.getDate()+n); return isoOf(d); };
+const mondayOf = iso => { const d=dOf(iso); const w=(d.getDay()+6)%7; d.setDate(d.getDate()-w); return isoOf(d); };
+function repeatDates(start, mode, until){
+  if(!start||!mode||mode==='none') return [start||null];
+  const end=until&&until>=start?until:addDaysISO(start,91), out=[]; let d=dOf(start); const day=d.getDate();
+  for(let i=0;i<60;i++){
+    const iso=isoOf(d); if(iso>end) break; out.push(iso);
+    if(mode==='w1') d.setDate(d.getDate()+7);
+    else if(mode==='w2') d.setDate(d.getDate()+14);
+    else { d=new Date(d.getFullYear(),d.getMonth()+1,1); d.setDate(Math.min(day,new Date(d.getFullYear(),d.getMonth()+1,0).getDate())); }
+  }
+  return out;
+}
+function planRange(){
+  const P=S.plan; if(!P.ref) P.ref=todayISO();
+  if(P.mode==='week'){ const a=mondayOf(P.ref); return [a,addDaysISO(a,6)]; }
+  const r=dOf(P.ref); const a=new Date(r.getFullYear(),r.getMonth(),1), b=new Date(r.getFullYear(),r.getMonth()+1,0);
+  return [mondayOf(isoOf(a)), addDaysISO(mondayOf(isoOf(b)),6)];
+}
+function planShift(n){ const P=S.plan; if(P.mode==='week') P.ref=addDaysISO(mondayOf(P.ref||todayISO()),7*n); else { const r=dOf(P.ref||todayISO()); P.ref=isoOf(new Date(r.getFullYear(),r.getMonth()+n,1)); } P.sel=null; route(); }
+function planToday(){ S.plan.ref=todayISO(); S.plan.sel=todayISO(); route(); }
+function planMode(m){ S.plan.mode=m; S.plan.sel=S.plan.sel||todayISO(); S.plan.ref=S.plan.sel; route(); }
+function planPick(iso){ S.plan.sel=iso; drawPlanDay(); document.querySelectorAll('.cd').forEach(c=>c.classList.toggle('sel',c.dataset.d===iso)); }
+function planTask(x){
+  const st=x.status||'open', late=st!=='done'&&x.due_date<todayISO();
+  const click=S.me.role==='owner'?`taskForm('${x.object_id}','${x.id}')`:`go('obj','${x.object_id}')`;
+  return `<div class="pt ${st}" onclick="${click}"><div class="row"><div class="pttl grow">${esc(x.title)}</div>${late?`<span class="badge b-red">!</span>`:''}<span class="badge b-${st}">${t('st_'+st)}</span></div>
+   <div class="small muted">🏢 ${esc(x.objects?.name||'')}${S.me.role!=='client'?` · 👷 ${x.assigned_to?esc(pname(x.assigned_to)):`<span style="color:var(--red)">${t('unassigned')}</span>`}`:''}</div></div>`;
+}
+const canAdd = () => S.me.role==='owner'||S.me.role==='worker';
+function dayBlock(iso){
+  const list=(S.planTasks||[]).filter(x=>x.due_date===iso), td=iso===todayISO();
+  const dname=dOf(iso).toLocaleDateString(loc(),{weekday:'long',day:'2-digit',month:'2-digit'});
+  return `<div class="day"><div class="dayh ${td?'today':''}"><b class="grow">${esc(dname)}${td?` · ${t('todayBtn')}`:''}</b>${canAdd()?`<button class="btn l sm" onclick="taskForm(null,null,'${iso}')">${t('addForDay')}</button>`:''}</div>
+   ${list.length?list.map(planTask).join(''):`<div class="small muted" style="padding:2px 4px 6px">${t('noTasksDay')}</div>`}</div>`;
+}
+function drawPlanDay(){ const el=document.getElementById('pday'); if(el&&S.plan.sel) el.innerHTML=dayBlock(S.plan.sel); }
+async function vPlan(){
+  const P=S.plan, [a,b]=planRange(), owner=S.me.role==='owner';
+  let q=sb.from('tasks').select('*, objects(name)').gte('due_date',a).lte('due_date',b).order('due_date').order('created_at').limit(1000);
+  if(owner&&P.worker==='__none') q=q.is('assigned_to',null); else if(owner&&P.worker) q=q.eq('assigned_to',P.worker);
+  S.planTasks=chk(await q)||[];
+  let title, body;
+  if(P.mode==='week'){
+    title=fmtD(a)+' – '+fmtD(b);
+    body=[0,1,2,3,4,5,6].map(i=>dayBlock(addDaysISO(a,i))).join('');
+  } else {
+    const r=dOf(P.ref), m=r.getMonth(), today=todayISO();
+    title=r.toLocaleDateString(loc(),{month:'long',year:'numeric'});
+    if(!P.sel||dOf(P.sel).getMonth()!==m) P.sel=(today.slice(0,7)===isoOf(r).slice(0,7))?today:isoOf(new Date(r.getFullYear(),m,1));
+    const heads=[0,1,2,3,4,5,6].map(i=>`<div class="wd">${esc(dOf(addDaysISO(a,i)).toLocaleDateString(loc(),{weekday:'short'}))}</div>`).join('');
+    let cells=''; for(let iso=a; iso<=b; iso=addDaysISO(iso,1)){
+      const l=S.planTasks.filter(x=>x.due_date===iso), open=l.filter(x=>x.status!=='done').length, late=open&&iso<today;
+      cells+=`<button class="cd ${dOf(iso).getMonth()!==m?'out':''} ${iso===today?'today':''} ${iso===P.sel?'sel':''}" data-d="${iso}" onclick="planPick('${iso}')"><span class="dn">${dOf(iso).getDate()}</span>${l.length?`<span class="cnt ${late?'late':(open?'':'ok')}">${open||'✓'}</span>`:''}</button>`;
+    }
+    body=`<div class="cal">${heads}${cells}</div><div id="pday"></div>`;
+  }
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('planTitle')}</h1>${canAdd()?`<button class="btn g sm" onclick="taskForm(null,null,S.plan.sel||todayISO())">${t('newTask')}</button>`:''}</div>
+  <div class="row" style="margin-bottom:10px"><div class="chips" style="margin:0">${[['week','week'],['month','monthV']].map(c=>`<button class="chip ${P.mode===c[0]?'on':''}" onclick="planMode('${c[0]}')">${t(c[1])}</button>`).join('')}</div><span class="grow"></span>
+   ${owner?`<select id="pwk" style="width:auto;max-width:190px" onchange="S.plan.worker=this.value;route()"><option value="">${t('allWorkers')}</option><option value="__none" ${P.worker==='__none'?'selected':''}>${t('unassigned')}</option>${workers().map(w=>`<option value="${w.id}" ${w.id===P.worker?'selected':''}>${esc(w.full_name||w.email)}</option>`).join('')}</select>`:''}</div>
+  <div class="calnav"><button class="btn l sm" aria-label="‹" onclick="planShift(-1)">‹</button><div class="ttl">${esc(title)}</div><button class="btn l sm" onclick="planToday()">${t('todayBtn')}</button><button class="btn l sm" aria-label="›" onclick="planShift(1)">›</button></div>
+  ${body}`);
+  if(P.mode==='month') drawPlanDay();
 }
 async function vTasks(){
   const f=S.taskFilter;
