@@ -232,6 +232,8 @@ const L = {
  assignObjects:['🏢 Objekte zuweisen','🏢 Assign properties','🏢 Dodeli objekte','🏢 Bina ata','🏢 Dodijeli objekte'],
  selected:['ausgewählt','selected','izabrano','seçili','odabrano'],
  route:['📍 Route','📍 Directions','📍 Ruta','📍 Yol tarifi','📍 Ruta'],
+ driveThere:['🚗 Hinfahren','🚗 Drive there','🚗 Vozi do tamo','🚗 Oraya git','🚗 Vozi do tamo'],
+ wxNoData:['keine Daten','no data','nema podataka','veri yok','nema podataka'],
  required:['Bitte Pflichtfelder ausfüllen.','Please fill in required fields.','Popuni obavezna polja.','Lütfen zorunlu alanları doldurun.','Ispuni obavezna polja.'],
  inviteText:['So kommen Mitarbeiter und Kunden in die App: Link schicken → sie registrieren sich → Sie geben hier die Rolle frei.','How workers and clients join: send the link → they register → you approve their role here.','Kako radnici i klijenti ulaze u aplikaciju: pošalji link → oni se registruju → ti ovde odobriš ulogu.','Çalışanlar ve müşteriler nasıl katılır: bağlantıyı gönderin → kayıt olurlar → burada rolü onaylarsınız.','Kako radnici i klijenti ulaze u aplikaciju: pošalji poveznicu → registriraju se → ti ovdje odobriš ulogu.'],
  copyLink:['🔗 Link kopieren','🔗 Copy link','🔗 Kopiraj link','🔗 Bağlantıyı kopyala','🔗 Kopiraj poveznicu'],
@@ -614,15 +616,48 @@ async function vObjects(){
   <div id="wcard"></div><div id="olist"></div>`);
   drawObjList();
 }
+const oaddr=o=>[o.address,o.city].filter(Boolean).join(', ');
+/* Öffnet Google Maps direkt im Navigationsmodus (Auto) */
+const navUrl=a=>'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(a)+'&travelmode=driving&dir_action=navigate';
+const driveBtn=(o,cls)=>{ const a=oaddr(o); return a?`<a class="btn g ${cls||''}" href="${esc(navUrl(a))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${t('driveThere')}</a>`:''; };
 const townOf = c => String(c||'Heilbronn').replace(/^\d{5}\s*/,'').split(/[-–(]/)[0].trim()||'Heilbronn';
-function snowBadge(o){ const w=(S.weather||{})[townOf(o.city)]; if(!w) return ''; if(w.snow_now>0) return `<span class="badge b-red">❄ ${t('snowNow')}</span>`; if(w.snow_24h>0) return `<span class="badge b-red">❄ ${w.snow_24h} cm</span>`; return ''; }
-async function loadWeather(){ try{ const r=await sb.from('weather').select('*'); S.weather={}; (r.data||[]).forEach(w=>S.weather[w.town]=w); }catch(e){ S.weather={}; } }
+function snowBadge(o){ const w=(S.weather||{})[townOf(o.city)]; if(!w||w.nodata) return ''; if(w.snow_now>0) return `<span class="badge b-red">❄ ${t('snowNow')}</span>`; if(w.snow_24h>0) return `<span class="badge b-red">❄ ${w.snow_24h} cm</span>`; return ''; }
+/* Wetter: live von Open-Meteo je Ort (min. Temperatur + Schneefall der nächsten 24 h). 15 Min. Zwischenspeicher. */
+const WX_HOME={lat:49.142,lon:9.218};
+async function geoTown(town){
+  const k='hms_geo_'+town; try{ const c=localStorage.getItem(k); if(c) return JSON.parse(c); }catch(e){}
+  const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&language=de&countryCode=DE&name='+encodeURIComponent(town)).then(x=>x.json());
+  const d=(x)=>Math.hypot(x.latitude-WX_HOME.lat,(x.longitude-WX_HOME.lon)*0.65);
+  const best=(r.results||[]).sort((a,b)=>d(a)-d(b))[0]; if(!best||d(best)>1.2) return null;
+  const g={lat:best.latitude,lon:best.longitude}; try{ localStorage.setItem(k,JSON.stringify(g)); }catch(e){} return g;
+}
+async function loadWeather(){
+  if(S.weather&&S.wxAt&&Date.now()-S.wxAt<15*60000) return;
+  let towns=[];
+  try{ const r=await sb.from('objects').select('city').eq('winterdienst',true).eq('active',true); towns=[...new Set((r.data||[]).map(o=>townOf(o.city)))]; }catch(e){}
+  if(!towns.length){ try{ const r=await sb.from('weather').select('town'); towns=(r.data||[]).map(w=>w.town); }catch(e){} }
+  const out={}; const now=new Date().toISOString();
+  try{
+    const gs=(await Promise.all(towns.map(async tw=>{ try{ const g=await geoTown(tw); return g?{tw,...g}:null; }catch(e){ return null; } }))).filter(Boolean);
+    if(gs.length){
+      const u='https://api.open-meteo.com/v1/forecast?latitude='+gs.map(g=>g.lat).join(',')+'&longitude='+gs.map(g=>g.lon).join(',')+'&hourly=temperature_2m,snowfall&current=temperature_2m,snowfall&forecast_hours=24&timezone=Europe%2FBerlin';
+      let res=await fetch(u).then(x=>x.json()); if(!Array.isArray(res)) res=[res];
+      res.forEach((w,i)=>{ const g=gs[i]; const h=w&&w.hourly; if(!g||!h||!h.temperature_2m) return;
+        const temps=h.temperature_2m.filter(v=>typeof v==='number'); if(!temps.length) return;
+        const snow=Math.round(h.snowfall.reduce((s,v)=>s+(v||0),0)*10)/10;
+        out[g.tw]={town:g.tw,tmin_24h:Math.min(...temps),t_now:w.current?w.current.temperature_2m:null,snow_24h:snow,snow_now:w.current?(w.current.snowfall||0):0,checked_at:now};
+      });
+    }
+  }catch(e){}
+  towns.forEach(tw=>{ if(!out[tw]) out[tw]={town:tw,nodata:true,snow_24h:0,snow_now:0}; });
+  S.weather=out; S.wxAt=Date.now();
+}
 function weatherCard(){
   const ws=Object.values(S.weather||{}); if(!ws.length) return '';
   ws.sort((a,b)=>(b.snow_24h-a.snow_24h)||a.town.localeCompare(b.town));
-  const when=ws[0].checked_at?fmtDT(ws[0].checked_at):'';
+  const ok=ws.find(w=>w.checked_at); const when=ok?fmtDT(ok.checked_at):'';
   return `<div class="card" style="background:#eef6ff;border-color:#bcd0f3"><b>${t('weatherTitle')}</b> <span class="small muted">${when}</span>
-   <div class="row" style="margin-top:6px;gap:6px">${ws.map(w=>`<span class="badge ${w.snow_now>0||w.snow_24h>0?'b-red':''}">${esc(w.town)}: ${w.snow_now>0?t('snowNow'):(w.snow_24h>0?w.snow_24h+' cm':t('noSnow'))} · ${Math.round(w.tmin_24h)}°</span>`).join('')}</div></div>`;
+   <div class="row" style="margin-top:6px;gap:6px">${ws.map(w=>w.nodata?`<span class="badge">${esc(w.town)}: ${t('wxNoData')}</span>`:`<span class="badge ${w.snow_now>0||w.snow_24h>0||w.tmin_24h<=0?'b-red':''}">${esc(w.town)}: ${w.snow_now>0?t('snowNow'):(w.snow_24h>0?w.snow_24h+' cm':t('noSnow'))} · ${w.t_now!=null?Math.round(w.t_now)+'° / ':''}min ${Math.round(w.tmin_24h)}°</span>`).join('')}</div></div>`;
 }
 function drawObjList(){
   const f=S.objFilter, q=f.q.toLowerCase(), mode=f.mode||'active', owner=S.me.role==='owner';
@@ -641,7 +676,7 @@ function drawObjList(){
     const n=S.objCounts[o.id]||0, run=S.active&&S.active.object_id===o.id;
     return `<div class="card obj click ${o.winterdienst&&o.active?'wd':''}" style="${o.active?'':'opacity:.6'}" onclick="go('obj','${o.id}')">
      <div class="ot">${esc(o.name)} ${o.winterdienst?`<span class="badge b-wd">❄ ${t('wd')}</span>`:''} ${o.active?'':`<span class="badge">🗄 ${t('inactive')}</span>`} ${o.one_off?`<span class="badge b-open">${t('oneOff')}</span>`:''} ${o.winterdienst&&o.active?snowBadge(o):''} ${run?`<span class="badge b-done">⏱ ${t('runningNow')}</span>`:''}</div>
-     <div class="muted">📍 ${esc([o.address,o.city].filter(Boolean).join(', '))}</div>
+     <div class="row" style="margin-top:2px"><div class="muted grow">📍 ${esc(oaddr(o))}</div>${o.active?driveBtn(o,'sm'):''}</div>
      ${o.description?`<div class="small" style="margin-top:4px">🧹 ${esc(o.description)}</div>`:((o.services||[]).length?`<div class="row" style="margin-top:6px;gap:4px">${o.services.map(x=>`<span class="badge">${esc(x)}</span>`).join('')}</div>`:'')}
      <div class="row small muted" style="margin-top:4px">${n?`<span class="badge b-open">${n} ${t('openTasks')}</span>`:''}${o.schedule?`<span>🗓 ${esc(o.schedule)}</span>`:''}${owner&&o.customer?`<span>🏢 ${esc(o.customer)}</span>`:''}${owner?`<span>👷 ${(S.objW[o.id]||[]).length?(S.objW[o.id]).map(pname).map(esc).join(', '):'<b style="color:var(--red)">–</b>'}</span>`:''}</div>
      ${owner?`<div class="row" style="margin-top:8px" onclick="event.stopPropagation()">${o.active?`<button class="btn l sm" onclick="setObjActive('${o.id}',false)">${t('archive')}</button>`:`<button class="btn g sm" onclick="setObjActive('${o.id}',true)">${t('reactivate')}</button>`}<span class="grow"></span><button class="btn l sm" title="${t('delete')}" onclick="deleteObject('${o.id}')">🗑</button></div>`:''}</div>`;
@@ -676,7 +711,7 @@ async function vObj(id){
   <div class="card obj ${obj.winterdienst?'wd':''}">
    <div class="row"><h1 class="grow" style="margin:0">${esc(obj.name)}</h1>${role==='owner'?`<button class="btn l sm" onclick="objectForm('${id}')">✏️ ${t('edit')}</button>`:''}</div>
    ${obj.winterdienst?`<div style="margin:6px 0"><span class="badge b-wd">❄ ${t('wd')}</span></div>`:''}
-   ${addr?`<div class="muted">${esc(addr)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}" target="_blank" rel="noopener">${t('route')}</a></div>`:''}
+   ${addr?`<div class="muted">📍 ${esc(addr)}</div><div style="margin-top:10px">${driveBtn(obj,'big')}</div>`:''}
    ${obj.active?'':`<div style="margin:6px 0"><span class="badge">🗄 ${t('archived')}</span></div>`}
    ${obj.description?`<div style="margin-top:10px"><b>🧹 ${t('objDescription')}:</b> ${esc(obj.description)}</div>`:''}
    ${obj.schedule?`<div style="margin-top:4px"><b>🗓 ${t('schedule')}:</b> ${esc(obj.schedule)}</div>`:''}
