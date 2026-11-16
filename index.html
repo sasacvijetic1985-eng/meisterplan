@@ -927,15 +927,19 @@ async function wdMonthJobs(){
 }
 function wdCalc(o,p,js){ const nv=js.filter(j=>j.kind!=='streuen').length, ns=js.filter(j=>j.kind==='streuen').length;
   const pe=Number(p.einsatz)||0, ps=p.einsatz_streuen!=null?Number(p.einsatz_streuen):pe;
-  return {nv,ns,salt:js.reduce((s,j)=>s+(Number(j.salt_kg)||0),0),sum:(Number(p.pauschale)||0)+nv*pe+ns*ps}; }
+  const hrs=p.stundensatz?((S.wdHours||{})[o.id]||0):0;
+  return {nv,ns,hrs,salt:js.reduce((s,j)=>s+(Number(j.salt_kg)||0),0),sum:(Number(p.pauschale)||0)+nv*pe+ns*ps+hrs*(Number(p.stundensatz)||0)}; }
 async function vWdPrices(list){
   const pr=await sb.from('wd_prices').select('*');
   if(pr.error){ main(`${wdHead()}<div class="card err">${t('wdDbMissing')}<div class="small muted">${esc(pr.error.message||'')}</div></div>`); return; }
   const P={}; (pr.data||[]).forEach(x=>P[x.object_id]=x); S.wdP=P;
-  const jobs=await wdMonthJobs(); S.wdMonthJobs=jobs;
+  const jobs=await wdMonthJobs(); S.wdMonthJobs=jobs; S.wdHours={};
+  const hourly=list.filter(o=>P[o.id]&&P[o.id].stundensatz).map(o=>o.id);
+  if(hourly.length){ const [y,m]=S.wdMonth.split('-').map(Number); const te=await sb.from('time_entries').select('object_id,started_at,ended_at').in('object_id',hourly).gte('started_at',new Date(y,m-1,1).toISOString()).lt('started_at',new Date(y,m,1).toISOString());
+    (te.data||[]).forEach(e=>{ if(e.ended_at) S.wdHours[e.object_id]=(S.wdHours[e.object_id]||0)+(new Date(e.ended_at)-new Date(e.started_at))/36e5; }); }
   let sum=0;
   const rows=list.map(o=>{ const p=P[o.id]||{}; const js=jobs.filter(j=>j.object_id===o.id); const c=wdCalc(o,p,js); sum+=c.sum;
-    const has=p.pauschale!=null||p.einsatz!=null;
+    const has=p.pauschale!=null||p.einsatz!=null||p.stundensatz!=null;
     return `<div class="card obj wd">
      <div class="row"><div class="ot grow">${esc(o.name)}</div><button class="btn l sm" onclick="wdPriceForm('${o.id}')">✏️ ${has?t('edit'):t('wdSetPrice')}</button></div>
      <div class="small muted">📍 ${esc(oaddr(o))}${o.customer?` · 🏢 ${esc(o.customer)}`:''}</div>
@@ -943,9 +947,10 @@ async function vWdPrices(list){
        <span class="badge">${t('wdFlat')}: <b>${eur(p.pauschale)}</b></span>
        ${p.einsatz!=null?`<span class="badge">${t('wdPerJob')}: <b>${eur(p.einsatz)}</b></span>`:''}
        ${p.einsatz_streuen!=null?`<span class="badge">${t('wdPerJobSalt')}: <b>${eur(p.einsatz_streuen)}</b></span>`:''}
+       ${p.stundensatz!=null?`<span class="badge">⏱ ${eur(p.stundensatz)} / Std.</span>`:''}
        ${p.brutto?`<span class="badge b-red">${t('wdGross')}</span>`:''}</div>`:`<div style="margin-top:6px"><span class="badge b-red">⚠ ${t('wdNoPrice')}</span></div>`}
      ${p.note?`<div class="small" style="margin-top:4px">📝 ${esc(p.note)}</div>`:''}
-     <div class="row small" style="margin-top:6px;gap:8px"><span class="muted grow">${p.source?`🧾 ${esc(p.source)}`:''}</span><span>❄🧹 <b>${c.nv}</b></span><span>🧂 <b>${c.ns}</b></span>${c.salt?`<span>${kg(c.salt)}</span>`:''}<span>${t('wdEst')}: <b>${eur(c.sum)}</b></span>${js.length?`<button class="btn l sm" onclick="wdReport('${o.id}')">📄 ${t('wdProof')}</button>`:''}</div></div>`; }).join('');
+     <div class="row small" style="margin-top:6px;gap:8px"><span class="muted grow">${p.source?`🧾 ${esc(p.source)}`:''}</span>${p.stundensatz?`<span>⏱ <b>${c.hrs.toFixed(2).replace('.',',')} h</b></span>`:''}<span>❄🧹 <b>${c.nv}</b></span><span>🧂 <b>${c.ns}</b></span>${c.salt?`<span>${kg(c.salt)}</span>`:''}<span>${t('wdEst')}: <b>${eur(c.sum)}</b></span>${js.length?`<button class="btn l sm" onclick="wdReport('${o.id}')">📄 ${t('wdProof')}</button>`:''}</div></div>`; }).join('');
   main(`${wdHead()}
    <div class="card" style="background:#fff8ec;border-color:#f1d29b">🔒 <b>${t('wdPriceOnly')}</b><div class="small muted" style="margin-top:4px">${t('wdBillHint')}</div></div>
    <div class="row" style="margin:6px 0 10px;gap:8px"><input type="month" value="${S.wdMonth}" style="width:auto" onchange="S.wdMonth=this.value;vWd()"><span class="grow"></span><b>${t('wdTotal')}: ${eur(sum)}</b><button class="btn sm" onclick="wdReport(null)">📄 ${t('wdMonthReport')}</button></div>
@@ -961,6 +966,7 @@ function wdReport(oid){
     return `<h3>${e(o.name)}</h3><div class="s">${e(oaddr(o))}${withPrice&&o.customer?' · '+e(o.customer):''}</div>
      <table><tr><th>#</th><th>Datum</th><th>Uhrzeit</th><th>Leistung</th><th>Streugut</th><th>Mitarbeiter</th>${!withPrice?'<th>Foto</th>':''}</tr>
      ${js.map((j,i)=>`<tr><td>${i+1}</td><td>${new Date(j.done_at).toLocaleDateString('de-DE')}</td><td>${new Date(j.done_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</td><td>${j.kind==='streuen'?'Streuen (Glättebekämpfung)':'Räumen und Streuen'}</td><td>${j.salt_kg?e(j.salt_kg)+' kg':''}</td><td>${e(pname(j.worker_id))}</td>${!withPrice?`<td>${j.photo_path?'✓':''}</td>`:''}</tr>`).join('')||`<tr><td colspan="7">Keine Einsätze in diesem Monat</td></tr>`}</table>
+     ${withPrice&&p.stundensatz?`<div class="sum">Nach Aufwand: ${c.hrs.toFixed(2).replace('.',',')} Std. × ${eur(p.stundensatz)}</div>`:''}
      ${withPrice?`<div class="sum">Pauschale ${eur(p.pauschale)} · Räumen+Streuen ${c.nv} × ${eur(p.einsatz)} · Streuen ${c.ns} × ${eur(p.einsatz_streuen!=null?p.einsatz_streuen:p.einsatz)} → <b>${eur(c.sum)} netto</b>${p.brutto?' (Preise brutto!)':''}</div>`:''}`; }).join('');
   const html=`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>${withPrice?'Winterdienst Abrechnung':'Einsatznachweis Winterdienst'} ${e(mon)}</title>
    <style>body{font-family:Arial,sans-serif;color:#222;margin:28px;font-size:12px}h1{color:#1565c0;font-size:20px;margin:0}h3{margin:18px 0 2px;color:#1565c0}.s{color:#666;margin-bottom:6px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:4px 6px;text-align:left}th{background:#e8f1fb}.sum{margin-top:6px;text-align:right}.hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #43a047;padding-bottom:8px;margin-bottom:10px}.ft{margin-top:24px;color:#666;font-size:11px}@media print{button{display:none}}</style></head><body>
@@ -977,6 +983,7 @@ function wdPriceForm(oid){
    <label>${t('wdFlat')} (€ netto)</label>${num('wp1',p.pauschale)}
    <label>${t('wdPerJob')} (€ netto)</label>${num('wp2',p.einsatz)}
    <label>${t('wdPerJobSalt')} (€ netto)</label>${num('wp3',p.einsatz_streuen)}
+   <label>⏱ € / Std. (nach Aufwand)</label>${num('wp7',p.stundensatz)}
    <label class="chk"><input type="checkbox" id="wp4" ${p.brutto?'checked':''}>${t('wdGross')}</label>
    <label>${t('wdSource')}</label><input id="wp5" value="${esc(p.source||'')}" placeholder="Lexware RE0123 / Angebot …">
    <label>${t('notes')}</label><textarea id="wp6">${esc(p.note||'')}</textarea>
@@ -984,7 +991,7 @@ function wdPriceForm(oid){
 }
 async function saveWdPrice(oid){
   const n=id=>{ const v=val(id).replace(',','.'); return v===''?null:Number(v); };
-  const rec={object_id:oid,pauschale:n('wp1'),einsatz:n('wp2'),einsatz_streuen:n('wp3'),brutto:$('#wp4').checked,source:val('wp5')||null,note:val('wp6')||null,updated_at:new Date().toISOString()};
+  const rec={object_id:oid,pauschale:n('wp1'),einsatz:n('wp2'),einsatz_streuen:n('wp3'),brutto:$('#wp4').checked,stundensatz:n('wp7'),source:val('wp5')||null,note:val('wp6')||null,updated_at:new Date().toISOString()};
   $('#wpsave').disabled=true;
   try{ chk(await sb.from('wd_prices').upsert(rec)); closeModal(); toast(t('saved')); vWd(); }catch(e){ $('#wpsave').disabled=false; toast(errMsg(e)); }
 }
