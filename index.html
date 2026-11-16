@@ -178,6 +178,29 @@ const L = {
  client:['Kunde / Hausverwaltung','Client / property manager','Klijent / upravnik','Müşteri / yönetim','Klijent / upravitelj'],
  none:['— keiner —','— none —','— nijedan —','— yok —','— nijedan —'],
  wd:['Winterdienst','Winter service','Zimska služba','Kış hizmeti','Zimska služba'],
+ nav_wd:['Winter','Winter','Zima','Kış','Zima'],
+ wdTitle:['❄ Winterdienst','❄ Winter service','❄ Zimska služba','❄ Kış hizmeti','❄ Zimska služba'],
+ wdNew:['+ Neues Winterdienst-Objekt','+ New winter service property','+ Novi objekat zimske službe','+ Yeni kış hizmeti binası','+ Novi objekt zimske službe'],
+ wdObjects:['Objekte im Winterdienst','Winter service properties','Objekata zimske službe','Kış hizmeti binası','Objekata zimske službe'],
+ wdTowns:['Orte','Towns','Mesta','Yerler','Mjesta'],
+ wdSnowAlert:['Schnee/Glätte erwartet','Snow/ice expected','Očekuje se sneg/poledica','Kar/buzlanma bekleniyor','Očekuje se snijeg/poledica'],
+ wdRoute:['Route im Ort starten','Start route in town','Pokreni rutu u mestu','Bu yerde rota başlat','Pokreni rutu u mjestu'],
+ wdTabObj:['❄ Objekte','❄ Objects','❄ Objekti','❄ Binalar','❄ Objekti'],
+ wdTabPrice:['💶 Preise & Abrechnung','💶 Prices & billing','💶 Cene i naplata','💶 Fiyatlar','💶 Cijene i naplata'],
+ wdPriceOnly:['Nur für den Inhaber sichtbar','Visible to owner only','Vidiš samo ti (vlasnik)','Sadece sahibi görür','Vidiš samo ti (vlasnik)'],
+ wdFlat:['Pauschale / Monat','Flat fee / month','Paušal / mesec','Aylık sabit','Paušal / mjesec'],
+ wdPerJob:['je Einsatz','per job','po izlasku','iş başı','po izlasku'],
+ wdPerJobSalt:['nur Streuen','gritting only','samo posipanje','sadece tuzlama','samo posipanje'],
+ wdDays:['Einsätze (Anfahrten)','Jobs (arrivals)','Izlazaka (dolazaka)','İş (varış)','Izlazaka (dolazaka)'],
+ wdEst:['Zu berechnen (netto)','To invoice (net)','Za naplatu (neto)','Faturalanacak (net)','Za naplatu (neto)'],
+ wdSource:['Quelle','Source','Izvor','Kaynak','Izvor'],
+ wdNoPrice:['Preis fehlt','No price','Nema cene','Fiyat yok','Nema cijene'],
+ wdSetPrice:['Preis eintragen','Set price','Unesi cenu','Fiyat gir','Unesi cijenu'],
+ wdGross:['Preise sind brutto','Prices are gross','Cene su bruto','Fiyatlar brüt','Cijene su bruto'],
+ wdDbMissing:['Preistabelle ist in der Datenbank noch nicht eingerichtet.','Price table not set up in the database yet.','Tabela cena još nije napravljena u bazi.','Fiyat tablosu henüz yok.','Tablica cijena još nije napravljena u bazi.'],
+ wdTotal:['Summe','Total','Ukupno','Toplam','Ukupno'],
+ wdDaysHint:['Einsätze = jede gestartete Zeiterfassung im Objekt im gewählten Monat, auch mehrmals am Tag (bitte prüfen, ob es Winterdienst war).','Jobs = every time entry started at the property that month, also several per day (check they were winter jobs).','Izlasci = svaki put kad je radnik pokrenuo rad na objektu u izabranom mesecu, i više puta u istom danu (proveri da li je to bila zimska služba).','İş = o ay binada başlatılan her zaman kaydı.','Izlasci = svaki put kad je radnik pokrenuo rad na objektu u odabranom mjesecu, i više puta u istom danu (provjeri je li to bila zimska služba).'],
+ wdNoWorker:['ohne Mitarbeiter','no worker','bez radnika','çalışansız','bez radnika'],
  wdOnly:['❄ Nur Winterdienst','❄ Winter service only','❄ Samo zimska služba','❄ Sadece kış hizmeti','❄ Samo zimska služba'],
  inactive:['inaktiv','inactive','neaktivan','pasif','neaktivan'],
  notes:['Hinweise','Notes','Napomene','Notlar','Napomene'],
@@ -559,14 +582,14 @@ async function logout(){ clearInterval(S.tick); await sb.auth.signOut(); }
 /* ================= Gerüst ================= */
 function navItems(){
   const r=S.me.role;
-  if(r==='owner') return [['dash','🏠','nav_dash'],['plan','📅','nav_plan'],['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat'],['team','👥','nav_team']];
-  if(r==='worker') return [['plan','📅','nav_plan'],['objects','🏢','nav_objects'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat']];
+  if(r==='owner') return [['dash','🏠','nav_dash'],['plan','📅','nav_plan'],['objects','🏢','nav_objects'],['wd','❄️','nav_wd'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat'],['team','👥','nav_team']];
+  if(r==='worker') return [['plan','📅','nav_plan'],['objects','🏢','nav_objects'],['wd','❄️','nav_wd'],['tasks','✅','nav_tasks'],['hours','⏱','nav_hours'],['mat','📦','nav_mat']];
   return [['objects','🏢','nav_objects'],['plan','📅','nav_plan'],['tasks','✅','nav_tasks']];
 }
-function go(view,param){ S.view=view; S.param=param||null; route(); window.scrollTo(0,0); }
+function go(view,param){ if(view==='obj'&&(S.view==='wd'||S.view==='objects')) S.backTo=S.view; else if(view!=='obj') S.backTo=null; S.view=view; S.param=param||null; route(); window.scrollTo(0,0); }
 function shell(){
   const first=(S.me.full_name||'').split(' ')[0]||'Profil';
-  const navView = S.view==='obj' ? 'objects' : S.view;
+  const navView = S.view==='obj' ? (S.backTo||'objects') : S.view;
   $('#app').innerHTML = `<header><div class="brand"><div class="logo"></div><div style="min-width:0"><div class="bt">Cvijetic HMS</div><div class="bs">Cvijetic Hausmeisterservice</div></div></div>
    <button class="hbtn" onclick="openProfile()">👤 ${esc(first)}</button></header>
    <div id="tbar"></div><main id="main"><div class="spin">…</div></main>
@@ -576,7 +599,7 @@ function shell(){
 async function route(){
   if(!S.me) return;
   shell();
-  const V={dash:vDash,plan:vPlan,objects:vObjects,obj:vObj,tasks:vTasks,hours:vHours,mat:vMat,team:vTeam};
+  const V={dash:vDash,plan:vPlan,objects:vObjects,wd:vWd,obj:vObj,tasks:vTasks,hours:vHours,mat:vMat,team:vTeam};
   const f=V[S.view]||vObjects;
   try{ await f(S.param); }catch(e){ $('#main').innerHTML=`<div class="card"><div class="err">${esc(errMsg(e))}</div><div class="mact"><button class="btn" onclick="route()">${t('refresh')}</button></div></div>`; }
 }
@@ -642,7 +665,7 @@ async function vDash(){
    <div class="stat" onclick="go('tasks')"><div class="n">${ot.count||0}</div><div class="muted">${t('openTasks')}</div></div>
    <div class="stat" onclick="go('mat')"><div class="n">${mr.count||0}</div><div class="muted">${t('openRequests')}</div></div>
    <div class="stat g" onclick="go('hours')"><div class="n">${fmtDur(ms)}</div><div class="muted">${t('hoursMonth')}</div></div>
-   <div class="stat" onclick="S.objFilter.mode='wd';go('objects')"><div class="n">❄ ${wdc.count||0}</div><div class="muted">${t('wd')}</div></div>
+   <div class="stat" onclick="go('wd')"><div class="n">❄ ${wdc.count||0}</div><div class="muted">${t('wd')}</div></div>
   </div>
   <h2>${t('todayTasks')}<span class="sp"></span><button class="btn g sm" onclick="taskForm()">${t('newTask')}</button></h2>
   ${td.length?td.map(taskCard).join(''):`<div class="empty">${t('noTasks')}</div>`}
@@ -730,8 +753,93 @@ function drawObjList(){
      ${owner?`<div class="row" style="margin-top:8px" onclick="event.stopPropagation()">${o.active?`<button class="btn l sm" onclick="setObjActive('${o.id}',false)">${t('archive')}</button>`:`<button class="btn g sm" onclick="setObjActive('${o.id}',true)">${t('reactivate')}</button>`}<span class="grow"></span><button class="btn l sm" title="${t('delete')}" onclick="deleteObject('${o.id}')">🗑</button></div>`:''}</div>`;
   }).join('') : `<div class="empty">${t('noObjects')}</div>`);
 }
+
+/* ================= Winterdienst (eigene Sektion) ================= */
+async function vWd(){
+  const owner=S.me.role==='owner';
+  const [objs,tk,ow]=await Promise.all([
+    sb.from('objects').select('*').eq('winterdienst',true).eq('active',true).order('name'),
+    sb.from('tasks').select('object_id').neq('status','done'),
+    owner?sb.from('object_workers').select('object_id,worker_id'):Promise.resolve({data:[]})]);
+  const list=chk(objs)||[]; S.objs=S.objs&&S.objs.length>list.length?S.objs:list; const counts={}; (chk(tk)||[]).forEach(x=>counts[x.object_id]=(counts[x.object_id]||0)+1);
+  S.objCounts=Object.assign(S.objCounts||{},counts);
+  S.objW=S.objW||{}; if(owner){ S.objW={}; (chk(ow)||[]).forEach(x=>(S.objW[x.object_id]=S.objW[x.object_id]||[]).push(x.worker_id)); }
+  await loadWeather();
+  const groups={}; list.forEach(o=>{ const tw=townOf(o.city); (groups[tw]=groups[tw]||[]).push(o); });
+  const hot=tw=>{ const w=(S.weather||{})[tw]; return w&&!w.nodata&&(w.snow_now>0||w.snow_24h>0||w.tmin_24h<=0); };
+  const towns=Object.keys(groups).sort((a,b)=>(hot(b)-hot(a))||(groups[b].length-groups[a].length)||a.localeCompare(b,'de'));
+  const nAlert=list.filter(o=>hot(townOf(o.city))).length;
+  const noW=owner?list.filter(o=>!(S.objW[o.id]||[]).length).length:0;
+  const routeUrl=os=>{ const a=os.map(oaddr).filter(Boolean); if(!a.length) return ''; const dest=a[a.length-1], wp=a.slice(0,-1).slice(0,9);
+    return 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination='+encodeURIComponent(dest)+(wp.length?'&waypoints='+encodeURIComponent(wp.join('|')):''); };
+  const card=o=>{ const n=counts[o.id]||0, run=S.active&&S.active.object_id===o.id, ws=S.objW[o.id]||[];
+    return `<div class="card obj wd click" onclick="go('obj','${o.id}')">
+     <div class="ot">${esc(o.name)} ${snowBadge(o)} ${run?`<span class="badge b-done">⏱ ${t('runningNow')}</span>`:''}</div>
+     <div class="row" style="margin-top:2px"><div class="muted grow">📍 ${esc(oaddr(o))}</div>${driveBtn(o,'sm')}</div>
+     ${o.description?`<div class="small" style="margin-top:4px">🧹 ${esc(o.description)}</div>`:''}
+     <div class="row small muted" style="margin-top:4px">${n?`<span class="badge b-open">${n} ${t('openTasks')}</span>`:''}${o.schedule?`<span>🗓 ${esc(o.schedule)}</span>`:''}${owner&&o.customer?`<span>🏢 ${esc(o.customer)}</span>`:''}${owner?`<span>👷 ${ws.length?ws.map(pname).map(esc).join(', '):`<b style="color:var(--red)">${t('wdNoWorker')}</b>`}</span>`:''}</div></div>`; };
+  if(owner&&S.wdTab==='price') return vWdPrices(list);
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('wdTitle')}</h1>${owner?`<button class="btn g sm" onclick="objectForm(null,true)">${t('wdNew')}</button>`:''}</div>${owner?wdTabs():''}
+  <div class="stats">
+   <div class="stat"><div class="n">❄ ${list.length}</div><div class="muted">${t('wdObjects')}</div></div>
+   <div class="stat"><div class="n">${towns.length}</div><div class="muted">${t('wdTowns')}</div></div>
+   <div class="stat ${nAlert?'':'g'}" style="${nAlert?'background:#fdecec;border-color:#f3b4b4':''}"><div class="n">${nAlert}</div><div class="muted">${t('wdSnowAlert')}</div></div>
+   ${owner?`<div class="stat"><div class="n" style="${noW?'color:var(--red)':''}">${noW}</div><div class="muted">${t('wdNoWorker')}</div></div>`:''}
+  </div>
+  ${weatherCard()}
+  ${list.length?towns.map(tw=>{ const os=groups[tw]; const ru=routeUrl(os); const w=(S.weather||{})[tw];
+    return `<h2>📍 ${esc(tw)} <span class="small muted">(${os.length})</span>${hot(tw)?` <span class="badge b-red">❄ ${w.snow_now>0?t('snowNow'):(w.snow_24h>0?w.snow_24h+' cm':'min '+Math.round(w.tmin_24h)+'°')}</span>`:''}<span class="sp"></span>${ru&&os.length>1?`<a class="btn l sm" href="${esc(ru)}" target="_blank" rel="noopener">🧭 ${t('wdRoute')}</a>`:''}</h2>${os.map(card).join('')}`; }).join('') : `<div class="empty">${t('noObjects')}</div>`}`);
+}
+
+function wdTabs(){ const tb=S.wdTab||'obj'; return `<div class="tabs" style="margin-bottom:10px"><button class="chip ${tb==='obj'?'on':''}" onclick="S.wdTab='obj';vWd()">${t('wdTabObj')}</button><button class="chip ${tb==='price'?'on':''}" onclick="S.wdTab='price';vWd()">${t('wdTabPrice')}</button></div>`; }
+const eur = n => (n==null||n==='')?'–':Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+async function vWdPrices(list){
+  if(!S.wdMonth){ const d=new Date(); S.wdMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+  const [y,m]=S.wdMonth.split('-').map(Number); const from=new Date(y,m-1,1), to=new Date(y,m,1);
+  const pr=await sb.from('wd_prices').select('*');
+  if(pr.error){ main(`<h1>${t('wdTitle')}</h1>${wdTabs()}<div class="card err">${t('wdDbMissing')}<div class="small muted">${esc(pr.error.message||'')}</div></div>`); return; }
+  const P={}; (pr.data||[]).forEach(x=>P[x.object_id]=x); S.wdP=P;
+  const te=await sb.from('time_entries').select('object_id,started_at').in('object_id',list.map(o=>o.id)).gte('started_at',from.toISOString()).lt('started_at',to.toISOString());
+  const days={}; (te.data||[]).forEach(e=>{ (days[e.object_id]=days[e.object_id]||[]).push(e.started_at); });
+  let sum=0;
+  const rows=list.map(o=>{ const p=P[o.id]||{}; const d=days[o.id]?days[o.id].length:0;
+    const est=(Number(p.pauschale)||0)+(p.einsatz?d*Number(p.einsatz):0); sum+=est;
+    const has=p.pauschale!=null||p.einsatz!=null;
+    return `<div class="card obj wd">
+     <div class="row"><div class="ot grow">${esc(o.name)}</div><button class="btn l sm" onclick="wdPriceForm('${o.id}')">✏️ ${has?t('edit'):t('wdSetPrice')}</button></div>
+     <div class="small muted">📍 ${esc(oaddr(o))}${o.customer?` · 🏢 ${esc(o.customer)}`:''}</div>
+     ${has?`<div class="row" style="margin-top:6px;gap:6px">
+       <span class="badge">${t('wdFlat')}: <b>${eur(p.pauschale)}</b></span>
+       ${p.einsatz!=null?`<span class="badge">${t('wdPerJob')}: <b>${eur(p.einsatz)}</b></span>`:''}
+       ${p.einsatz_streuen!=null?`<span class="badge">${t('wdPerJobSalt')}: <b>${eur(p.einsatz_streuen)}</b></span>`:''}
+       ${p.brutto?`<span class="badge b-red">${t('wdGross')}</span>`:''}</div>`:`<div style="margin-top:6px"><span class="badge b-red">⚠ ${t('wdNoPrice')}</span></div>`}
+     ${p.note?`<div class="small" style="margin-top:4px">📝 ${esc(p.note)}</div>`:''}
+     <div class="row small" style="margin-top:6px"><span class="muted grow">${p.source?`🧾 ${t('wdSource')}: ${esc(p.source)}`:''}</span><span>${t('wdDays')}: <b>${d}</b></span><span>${t('wdEst')}: <b>${eur(est)}</b></span></div></div>`; }).join('');
+  main(`<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${t('wdTitle')}</h1></div>${wdTabs()}
+   <div class="card" style="background:#fff8ec;border-color:#f1d29b">🔒 <b>${t('wdPriceOnly')}</b><div class="small muted" style="margin-top:4px">${t('wdDaysHint')}</div></div>
+   <div class="row" style="margin:6px 0 10px"><input type="month" value="${S.wdMonth}" style="width:auto" onchange="S.wdMonth=this.value;vWd()"><span class="grow"></span><b>${t('wdTotal')}: ${eur(sum)}</b></div>
+   ${rows||`<div class="empty">${t('noObjects')}</div>`}`);
+}
+function wdPriceForm(oid){
+  const o=(S.objs||[]).find(x=>x.id===oid)||{}; const p=(S.wdP||{})[oid]||{};
+  const num=(id,v)=>`<input id="${id}" type="number" step="0.01" inputmode="decimal" value="${v==null?'':v}">`;
+  modal(`<h3>💶 ${esc(o.name||'')}</h3><div class="small muted">${t('wdPriceOnly')}</div>
+   <label>${t('wdFlat')} (€ netto)</label>${num('wp1',p.pauschale)}
+   <label>${t('wdPerJob')} (€ netto)</label>${num('wp2',p.einsatz)}
+   <label>${t('wdPerJobSalt')} (€ netto)</label>${num('wp3',p.einsatz_streuen)}
+   <label class="chk"><input type="checkbox" id="wp4" ${p.brutto?'checked':''}>${t('wdGross')}</label>
+   <label>${t('wdSource')}</label><input id="wp5" value="${esc(p.source||'')}" placeholder="Lexware RE0123 / Angebot …">
+   <label>${t('notes')}</label><textarea id="wp6">${esc(p.note||'')}</textarea>
+   <div class="mact"><button class="btn l" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="wpsave" onclick="saveWdPrice('${oid}')">${t('save')}</button></div>`);
+}
+async function saveWdPrice(oid){
+  const n=id=>{ const v=val(id).replace(',','.'); return v===''?null:Number(v); };
+  const rec={object_id:oid,pauschale:n('wp1'),einsatz:n('wp2'),einsatz_streuen:n('wp3'),brutto:$('#wp4').checked,source:val('wp5')||null,note:val('wp6')||null,updated_at:new Date().toISOString()};
+  $('#wpsave').disabled=true;
+  try{ chk(await sb.from('wd_prices').upsert(rec)); closeModal(); toast(t('saved')); vWd(); }catch(e){ $('#wpsave').disabled=false; toast(errMsg(e)); }
+}
 async function setObjActive(id,act){
-  try{ chk(await sb.from('objects').update({active:act}).eq('id',id)); const o=(S.objs||[]).find(x=>x.id===id); if(o) o.active=act; toast(act?t('saved'):t('archived')); if(S.view==='obj') route(); else drawObjList(); }catch(e){ toast(errMsg(e)); }
+  try{ chk(await sb.from('objects').update({active:act}).eq('id',id)); const o=(S.objs||[]).find(x=>x.id===id); if(o) o.active=act; toast(act?t('saved'):t('archived')); if(S.view==='obj') route(); else if(S.view==='wd') vWd(); else drawObjList(); }catch(e){ toast(errMsg(e)); }
 }
 
 async function vObj(id){
@@ -755,7 +863,7 @@ async function vObj(id){
     else timer=`<button class="btn g big" style="margin-bottom:10px" ${S.active?'disabled':''} onclick="startWork('${id}')">${t('startWork')}</button>${S.active?`<div class="muted small center" style="margin:-4px 0 10px">${t('otherRunning')}</div>`:''}`;
   }
   const open=tl.filter(x=>x.status!=='done'), done=tl.filter(x=>x.status==='done').slice(0,10);
-  main(`<button class="link" style="padding:0 0 8px" onclick="go('objects')">${t('back')}</button>
+  main(`<button class="link" style="padding:0 0 8px" onclick="go(S.backTo||'objects')">${t('back')}</button>
   <div class="card obj ${obj.winterdienst?'wd':''}">
    <div class="row"><h1 class="grow" style="margin:0">${esc(obj.name)}</h1>${role==='owner'?`<button class="btn l sm" onclick="objectForm('${id}')">✏️ ${t('edit')}</button>`:''}</div>
    ${obj.winterdienst?`<div style="margin:6px 0"><span class="badge b-wd">❄ ${t('wd')}</span></div>`:''}
@@ -777,8 +885,8 @@ async function vObj(id){
   ${role==='worker'?`<div style="margin-top:18px"><button class="btn l" onclick="matForm('${id}')">${t('newRequest')}</button></div>`:''}`);
 }
 
-function objectForm(id){
-  const o = id ? S.curObj : {name:'',address:'',city:'',client_id:null,winterdienst:false,notes:'',active:true,services:[],customer:''};
+function objectForm(id,wd){
+  const o = id ? S.curObj : {name:'',address:'',city:'',client_id:null,winterdienst:!!wd,notes:'',active:true,services:[],customer:''};
   const svc=[...new Set([...SERVICES,...(o.services||[])])];
   const assigned = id ? (S.curAssigned||[]) : [];
   const ws=S.people.filter(p=>p.role==='worker');
@@ -815,12 +923,12 @@ async function saveObject(id){
     else oid=chk(await sb.from('objects').insert(rec).select('id').single()).id;
     chk(await sb.from('object_workers').delete().eq('object_id',oid));
     if(sel.length) chk(await sb.from('object_workers').insert(sel.map(w=>({object_id:oid,worker_id:w}))));
-    closeModal(); toast(t('saved')); go('obj',oid);
+    closeModal(); toast(t('saved')); if(S.view==='wd') S.backTo='wd'; S.view=S.backTo||S.view; go('obj',oid);
   }catch(e){ $('#fsave').disabled=false; toast(errMsg(e)); }
 }
 async function deleteObject(id){
   if(!confirm(t('confirmDelete'))) return;
-  try{ chk(await sb.from('objects').delete().eq('id',id)); closeModal(); S.view==='objects'?vObjects():go('objects'); }catch(e){ toast(errMsg(e)); }
+  try{ chk(await sb.from('objects').delete().eq('id',id)); closeModal(); S.view==='objects'?vObjects():(S.view==='wd'?vWd():go(S.backTo||'objects')); }catch(e){ toast(errMsg(e)); }
 }
 
 /* ================= Aufgaben ================= */
