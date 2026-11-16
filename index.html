@@ -681,7 +681,7 @@ async function vObjects(){
   S.objs=chk(objs); const counts={}; (chk(tk)||[]).forEach(x=>counts[x.object_id]=(counts[x.object_id]||0)+1); S.objCounts=counts;
   S.objW={}; (chk(ow)||[]).forEach(x=>(S.objW[x.object_id]=S.objW[x.object_id]||[]).push(x.worker_id));
   const banner=await pushBanner(); await loadWeather();
-  main(`${banner}${S.me.role==='client'?contactCard():''}<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${S.me.role==='owner'?t('nav_objects'):t('myObjects')}</h1>${S.me.role==='owner'?`<button class="btn g sm" onclick="objectForm()">${t('newObject')}</button>`:''}</div>
+  main(`${banner}${S.me.role==='client'?contactCard():''}<div class="row" style="margin-bottom:10px"><h1 class="grow" style="margin:0">${S.me.role!=='client'?t('nav_objects'):t('myObjects')}</h1>${S.me.role==='owner'?`<button class="btn g sm" onclick="objectForm()">${t('newObject')}</button>`:''}</div>
   <input id="oq" placeholder="${t('search')}" value="${esc(S.objFilter.q)}" oninput="S.objFilter.q=this.value;drawObjList()" style="margin-bottom:10px">
   <div class="chips" id="ochips">${(S.me.role==='owner'?[['active','f_active'],['wd','wdOnly'],['oneoff','oneOff'],['free','unassigned'],['arch','f_archived'],['all','all']]:[['active','all'],['wd','wdOnly']]).map(c=>`<button class="chip" data-m="${c[0]}" onclick="S.objFilter.mode='${c[0]}';drawObjList()">${c[0]==='free'?'⚠ ':''}${t(c[1])}</button>`).join('')}</div>
   <div id="wcard"></div><div id="olist"></div>`);
